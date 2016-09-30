@@ -9,22 +9,18 @@
 
 float RGBA[4] = {1,1,1,1};
 
-//Projection function, mostly stolen as usual from Example 26
+//Projection function.
 void Project(double fov,double asp,double dim)
 {
-   //  Tell OpenGL we want to manipulate the projection matrix
    glMatrixMode(GL_PROJECTION);
-   //  Undo previous transformations
    glLoadIdentity();
-   //  Perspective transformation
-   if (fov)
+   if (isPersp)
+	  //This sets up a perspective matrix, but doesn't actually reproject the scene. It defines the size of the truncated pyramid. Analogy: choose a lens for a camera.
       gluPerspective(fov,asp,dim/16,16*dim);
-   //  Orthogonal transformation
    else
       glOrtho(-asp*dim,asp*dim,-dim,+dim,-dim,+dim);
-   //  Switch to manipulating the model matrix
    glMatrixMode(GL_MODELVIEW);
-   //  Undo previous transformations
+   //why is this necessary?
    glLoadIdentity();
 }
 
@@ -52,30 +48,60 @@ void key(unsigned char ch,int x,int y)
    else if(ch == '1') {
      shouldMove=!shouldMove;
    }
-   //First person movement requires a perspective projection - better to leave it until next assignment, but you'd probably start like this:
-   /*else if(ch == 'w') {
-     glPushMatrix();
-     glLoadIdentity();
-     double x;
-     double y;
-     double z;
-     sphericalToCartesian(1, ph, (180-th), &x, &y, &z);
-     glTranslated(x,y,z);
-     printf("Translating by vector (%f,%f,%f)\n", x, y, z);
-     glPopMatrix();
+   else if (ch == 'f') {
+	 if(fov < 85) fov+=5;
+   }
+   else if (ch == 'F') {
+	 if(fov > 25) fov-=5;
+   }
+   else if (ch == 'g') {
+	 fov=0;
+   }
+   else if (ch == 'p') {
+	    isPersp = !isPersp;
+   }
+   else if(ch == 'w') {
+     printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+     double step[3];
+     double focLen = sqrt((lookVec[0])*(lookVec[0])+(lookVec[1])*(lookVec[1])+(lookVec[2])*(lookVec[2]));
+     printf("focLen = %f\n", focLen);
+     Ex += 0.2*lookVec[0]/focLen;
+     Ey += 0.2*lookVec[1]/focLen;
+     Ez += 0.2*lookVec[2]/focLen;
+     cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
+     printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
    }
    else if(ch == 's') {
-
+     printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+     double focLen = sqrt((lookVec[0])*(lookVec[0])+(lookVec[1])*(lookVec[1])+(lookVec[2])*(lookVec[2]));
+     printf("focLen is %f\n", focLen);
+     Ex -= 0.2*lookVec[0]/focLen;
+     Ey -= 0.2*lookVec[1]/focLen;
+     Ez -= 0.2*lookVec[2]/focLen;
+     cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
+     printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
    }
    else if(ch == 'a') {
-
+     printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+     Ex -= 0.2*rightVec[0]; //rightVec is a unit vector
+     Ey -= 0.2*rightVec[1];
+     Ez -= 0.2*rightVec[2];
+     cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
+     printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
    }
    else if(ch == 'd') {
+     printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+     Ex += 0.2*rightVec[0];
+     Ey += 0.2*rightVec[1];
+     Ez += 0.2*rightVec[2];
+     cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
+     printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
+   }
+   glFlush();
+   glutSwapBuffers();
 
-   }*/
-
-
-   Project(0,w2h,dim);
+   fov = fmod(fov, 180);
+   Project(fov,w2h,dim);
    //  Tell GLUT it is necessary to redisplay the scene
    glutPostRedisplay();
 }
@@ -107,8 +133,7 @@ void special(int key,int x,int y)
    th %= 360;
    ph %= 360;
 
-   Project(0,w2h,dim);
-   //  Tell GLUT it is necessary to redisplay the scene
+   Project(fov,w2h,dim);
    glutPostRedisplay();
 }
 
@@ -123,6 +148,24 @@ void reshape(int width,int height)
    glViewport(0,0, width,height);
    //  Tell OpenGL we want to manipulate the projection matrix
    Project(0, w2h, dim);
+}
+
+void moveCamera() {
+  if (isPersp)
+   {
+	  //After gluPerspective sets up the truncated pyramid, gluLookAt puts a camera at the specified coords that uses gluPersp's matrix.
+      //printf("phi = %f and theta = %f and rho = %f\n", ph, th, rh);
+      /*double Ex = -1*rh*Sin(th)*Cos(ph);
+      double Ey = rh*Sin(ph);
+      double Ez = rh*Cos(th)*Cos(ph);*/
+      gluLookAt(Ex,Ey,Ez, lookVec[0]+Ex, lookVec[1]+Ey, lookVec[2]+Ez, 0,Cos(ph),0);
+      //printf("ex = %f ey = %f ez = %f\n", Ex, Ey, Ez);
+      //printf("Focusing on (%f,%f,%f)\n", lookVec[0], lookVec[1], lookVec[2]);
+   } else {
+	  //  Set view angle
+	  glRotated(ph,1,0,0);
+	  glRotated(th,0,1,0);
+  }
 }
 
 void display() {
@@ -143,10 +186,7 @@ void display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   //  Reset previous transforms
   glLoadIdentity();
-  //  Set view angle
-  glRotated(ph,1,0,0);
-  glRotated(th,0,1,0);
-
+  moveCamera();
   //  Enable light 0
   glEnable(GL_LIGHT0);
   //  Set ambient, diffuse, specular components and position of light 0
@@ -163,6 +203,7 @@ void display() {
 
   glPushMatrix();
   drawSeaUrchin();
+  //drawCube();
   glPopMatrix();
 
   double rad = 1.6;
@@ -176,7 +217,6 @@ void display() {
     drawCube();
     glPopMatrix();
   }
-
   glFlush();
   glutSwapBuffers(); //this is for double buffered window. Single buffered uses glFlush.
 }

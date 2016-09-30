@@ -18,11 +18,18 @@ double w2h;
 double cubeRotate;
 int th;       // Azimuth of view angle
 int ph;       // Elevation of view angle
+double rh;    //rho of view angle
 double z;     // Z variable
 double w;     // W variable
 double dim;   // Dimension of orthogonal box
-int obj; //loads my elf dude that I made in Sculptris. "Object display list."
+double Ex;
+double Ey;
+double Ez;
 int shouldMove;
+double lookVec[3]; //Vector with length 3 currently in direction I'm looking FROM ME NOT ORIGIN. NOT A POINT.
+double rightVec[3]; //Vector that points to my right at all times, currently unit.
+double fov; //field of view
+int isPersp; //perspective or orthogonal projection
 int spineAnglesSet;
 #define SPINES 100
 double spineAngles[SPINES*4];
@@ -33,6 +40,7 @@ double spineAngles[SPINES*4];
 
 void Print(const char* format , ...);
 void sphericalToCartesian(double rho, double phi, double theta, double* x, double* y, double* z);
+void cartesianToSpherical(double x, double y, double z, double *rho, int *phi, int *theta);
 void drawCone(double h, double r);
 void drawCube();
 void drawAxes();

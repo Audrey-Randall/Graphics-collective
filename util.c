@@ -9,8 +9,20 @@ void init() {
 	z=0;     // Z variable
 	w=1;     // W variable
 	dim=2;   // Dimension of orthogonal box
-	shouldMove = 1;
+	shouldMove = 0;
 	spineAnglesSet = 0;
+	fov = 53;
+	isPersp=0;
+	rh = 2;
+	lookVec[0] = 0;
+	lookVec[1] = 0;
+	lookVec[2] = -1;
+	rightVec[0] = 1;
+	rightVec[1] = 0;
+	rightVec[2] = 0;
+	Ex = 0;
+	Ey = 0;
+	Ez = 2;
 }
 
 void Print(const char* format , ...)
@@ -31,6 +43,12 @@ void sphericalToCartesian(double rho, double phi, double theta, double* x, doubl
   *x = rho*Sin(theta)*Cos(phi);
   *y = rho*Sin(theta)*Cos(phi);
   *z = rho*Cos(theta);
+}
+
+void cartesianToSpherical(double x, double y, double z, double *rho, int *phi, int *theta) {
+	*rho = sqrt(x*x+y*y+z*z);
+	*phi = acosf(z/(*rho));
+	*theta = atanf(y/x);
 }
 
 void drawCone(double h, double r) {
