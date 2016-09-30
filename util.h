@@ -14,6 +14,10 @@
 #include <GL/glut.h>
 #endif
 
+int left;
+int right;
+int up;
+int down;
 double w2h;
 double cubeRotate;
 int th;       // Azimuth of view angle
