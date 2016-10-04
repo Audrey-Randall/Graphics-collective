@@ -52,6 +52,7 @@ double spineAngles[SPINES*4];
 void Print(const char* format , ...);
 void sphericalToCartesian(double rho, double phi, double theta, double* x, double* y, double* z);
 void cartesianToSpherical(double x, double y, double z, double *rho, int *phi, int *theta);
+void cross(double v1[3], double v2[3], double res[3]);
 void drawCone(double h, double r);
 void drawCube();
 void drawAxes();

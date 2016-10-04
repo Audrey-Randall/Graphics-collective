@@ -52,14 +52,25 @@ void cartesianToSpherical(double x, double y, double z, double *rho, int *phi, i
 	*phi = atanf(y/x)*180/3.1415927;
 }
 
+void cross(double v1[3], double v2[3], double res[3]) {
+	res[0] = v1[1]*v2[2]-v2[1]*v1[2];
+	res[1] = -1*(v1[0]*v2[2] - v2[0]*v1[2]);
+	res[2] = v1[0]*v2[1] - v2[0]*v1[1];
+}
+
 void drawCone(double h, double r) {
-  glBegin(GL_TRIANGLE_FAN);
-  glNormal3f(0,0,1);
-  glVertex3d(0,0,h);
+  glBegin(GL_TRIANGLES);
   int i;
-  for(i = 0; i <=360; i+=15) {
-    glNormal3f(Sin(i), Cos(i), 0);
+  for(i = 0; i <360; i+=15) {
+		double v1[3] = {-r*Sin(i), -r*Cos(i), h};
+		double v2[3] = {r*Sin(i+15)-r*Sin(i), r*Cos(i+15)-r*Cos(i), 0};
+		double normal[3];
+		cross(v1, v2, normal);
+		//printf("Normal is (%f,%f,%f)\n", normal[0], normal[1], normal[2]);
+		glNormal3f(normal[0], normal[1], normal[2]);
+	  glVertex3d(0,0,h);
     glVertex3d(r*Sin(i),r*Cos(i), 0);
+		glVertex3d(r*Sin(i+15), r*Cos(i+15), 0);
   }
   glEnd();
   glBegin(GL_TRIANGLE_FAN);
