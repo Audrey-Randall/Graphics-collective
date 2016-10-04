@@ -25,6 +25,12 @@ int lastY;
 int rotateCamera; //boolean set when right click held
 double sensitivity; //determines translation of pixels-traversed-by-pointer to degrees-rotated-by-camera
 
+//Lighting
+double ltAng; //angle
+double ltY;
+int ltMove; //boolean
+double ltPos[4];
+
 double w2h;
 double cubeRotate;
 int th;       // Azimuth of view angle
@@ -58,4 +64,5 @@ void drawCube();
 void drawAxes();
 void setSpineAngles(double * arr, int size);
 void drawSeaUrchin();
+void getLtPos();
 #endif

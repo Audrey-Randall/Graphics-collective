@@ -24,6 +24,17 @@ void init() {
 	Ey = 0;
 	Ez = 2;
 	sensitivity = 0.3;
+	ltAng = 0;
+	ltY = 0;
+	ltMove = 1;
+	getLtPos();
+}
+
+void getLtPos(){
+	ltPos[0] = 2*Cos(ltAng);
+	ltPos[1] = ltY;
+	ltPos[2] = 2*Sin(ltAng);
+	ltPos[3] = 1.0;
 }
 
 void Print(const char* format , ...)
@@ -93,7 +104,7 @@ void drawCube() {
     glVertex3d(-1.0f, 1.0f, 1.0f);
     glVertex3d(-1.0f, 1.0f,-1.0f);
 
-    glNormal3f(0,-1,0);
+    glNormal3f(0,0,-1);
     glColor3f(1,0,0); //red
     glVertex3d(1.0f, 1.0f,-1.0f);
     glVertex3d(-1.0f,-1.0f,-1.0f);
@@ -102,7 +113,7 @@ void drawCube() {
     glVertex3d(1.0f,-1.0f,-1.0f);
     glVertex3d(-1.0f,-1.0f,-1.0f);
 
-    glNormal3f(0,0,-1);
+    glNormal3f(0,-1,0);
     glColor3f(0,1,0); //green
     glVertex3d(1.0f,-1.0f, 1.0f);
     glVertex3d(-1.0f,-1.0f,-1.0f);
@@ -111,7 +122,7 @@ void drawCube() {
     glVertex3d(-1.0f,-1.0f, 1.0f);
     glVertex3d(-1.0f,-1.0f,-1.0f);
 
-    glNormal3f(1,0,0);
+    glNormal3f(0,0,1);
     glColor3f(0,0,1); //blue
     glVertex3d(-1.0f, 1.0f, 1.0f);
     glVertex3d(-1.0f,-1.0f, 1.0f);
@@ -120,7 +131,7 @@ void drawCube() {
     glVertex3d(-1.0f, 1.0f, 1.0f);
     glVertex3d(1.0f,-1.0f, 1.0f);
 
-    glNormal3f(0,1,0);
+    glNormal3f(1,0,0);
     glColor3f(1,0,1); //magenta
     glVertex3d(1.0f,-1.0f,-1.0f);
     glVertex3d(1.0f, 1.0f, 1.0f);
@@ -129,8 +140,8 @@ void drawCube() {
     glVertex3d(1.0f,-1.0f,-1.0f);
     glVertex3d(1.0f, 1.0f,-1.0f);
 
-    glNormal3f(0,0,1);
-    glColor3f(0,1,1); //cyan correct
+    glNormal3f(0,1,0);
+    glColor3f(0,1,1); //cyan
     glVertex3d(1.0f, 1.0f, 1.0f);
     glVertex3d(-1.0f, 1.0f,-1.0f);
     glVertex3d(-1.0f, 1.0f, 1.0f);
@@ -139,7 +150,7 @@ void drawCube() {
     glVertex3d(-1.0f, 1.0f,-1.0f);
 
     glEnd();
-    glFlush();
+    //glFlush();
 }
 
 void drawAxes(){
@@ -176,4 +187,27 @@ void drawSeaUrchin(){
     glPopMatrix();
   }
   //glutSolidSphere(0.7, 15, 15);
+}
+
+void setLight(){
+	//Lighting variables, taken from example 26
+  float Emission[]  = {0.0,0.0,0.0,1.0};
+  float Ambient[]   = {0.3,0.3,0.3,1.0};
+  float Diffuse[]   = {1.0,1.0,1.0,1.0};
+  float Specular[]  = {1.0,1.0,1.0,1.0};
+	float Position[] = {2*Cos(ltAng), ltY, 2*Sin(ltAng), 1.0};
+  float Shinyness[] = {16};
+	float RGBA[4] = {1,1,1,1};
+
+	//  Set ambient, diffuse, specular components and position of light 0
+  glLightfv(GL_LIGHT0,GL_AMBIENT ,Ambient);
+  glLightfv(GL_LIGHT0,GL_DIFFUSE ,Diffuse);
+  glLightfv(GL_LIGHT0,GL_SPECULAR,Specular);
+  glLightfv(GL_LIGHT0,GL_POSITION, Position);
+  //  Set materials
+  glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,Shinyness);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,RGBA);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,RGBA);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,Specular);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
 }

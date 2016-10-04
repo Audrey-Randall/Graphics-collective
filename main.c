@@ -7,8 +7,6 @@
     http://www.opengl-tutorial.org/beginners-tutorials/tutorial-4-a-colored-cube/
 */
 
-float RGBA[4] = {1,1,1,1};
-
 //Projection function.
 void Project(double fov,double asp,double dim)
 {
@@ -77,6 +75,9 @@ void key(unsigned char ch,int x,int y)
      int tT;
      cartesianToSpherical(1,1,0,&tR, &tP, &tT);
      printf("testing: should be (1.4,45,90) is (%f,%d,%d)\n", tR, tP, tT);
+   }
+   else if(ch == ' '){
+     ltMove = !ltMove;
    }
    //leaving these in makes the odd flickering thing happen. Flush and swap should only be in display.
    //glFlush();
@@ -198,42 +199,33 @@ void moveCamera() {
 }
 
 void display() {
-  //printf("display \n");
-
-  //Lighting variables, taken from example 26
-  float Emission[]  = {0.0,0.0,0.0,1.0};
-  float Ambient[]   = {0.3,0.3,0.3,1.0};
-  float Diffuse[]   = {1.0,1.0,1.0,1.0};
-  float Specular[]  = {1.0,1.0,1.0,1.0};
-  float Position[]  = {0.9,0.9,0.9};//{2*Cos(zh),Ylight,2*Sin(zh),1.0};
-  float Shinyness[] = {16};
   //This needs to be called before glClear for reasons unknown!!!!!!!!!!!
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_NORMALIZE); //Normalizes all the normal vectors.
   glEnable(GL_LIGHTING);
-  //  Clear the image
-  //  Reset previous transforms
   glLoadIdentity();
   moveCamera();
-  //  Enable light 0
+
   glEnable(GL_LIGHT0);
-  //  Set ambient, diffuse, specular components and position of light 0
-  glLightfv(GL_LIGHT0,GL_AMBIENT ,Ambient);
-  glLightfv(GL_LIGHT0,GL_DIFFUSE ,Diffuse);
-  glLightfv(GL_LIGHT0,GL_SPECULAR,Specular);
-  glLightfv(GL_LIGHT0,GL_POSITION,Position);
-  //  Set materials
-  glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,Shinyness);
-  glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,RGBA);
-  glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,RGBA);
-  glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,Specular);
-  glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
+  getLtPos();
+  setLight();
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  //draw light placeholder
+  glPushMatrix();
+  glTranslated(ltPos[0], ltPos[1], ltPos[2]);
+  glScaled(0.1,0.1,0.1);
+  drawCube();
+  glPopMatrix();
+  
   glPushMatrix();
   drawSeaUrchin();
   //drawCube();
   glPopMatrix();
+
+  //glDisable(GL_LIGHTING);
+  //glDisable(GL_LIGHT0);
 
   double rad = 1.6;
   double i;
@@ -258,6 +250,7 @@ void idle()
    //  Elapsed time in seconds
    double t = glutGet(GLUT_ELAPSED_TIME)/1000.0;
    if(shouldMove) cubeRotate = fmod(100*t,360.0);
+   if(ltMove) ltAng = fmod(ltAng+2, 360.0);
 
    if(up) {
      printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
