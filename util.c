@@ -23,6 +23,7 @@ void init() {
 	Ex = 0;
 	Ey = 0;
 	Ez = 2;
+	sensitivity = 0.3;
 }
 
 void Print(const char* format , ...)
@@ -47,8 +48,8 @@ void sphericalToCartesian(double rho, double phi, double theta, double* x, doubl
 
 void cartesianToSpherical(double x, double y, double z, double *rho, int *phi, int *theta) {
 	*rho = sqrt(x*x+y*y+z*z);
-	*phi = acosf(z/(*rho));
-	*theta = atanf(y/x);
+	*theta = acosf(z/ *rho)*180/3.1415927;
+	*phi = atanf(y/x)*180/3.1415927;
 }
 
 void drawCone(double h, double r) {

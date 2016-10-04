@@ -71,6 +71,12 @@ void key(unsigned char ch,int x,int y)
    }
    else if(ch == 'd') {
      right = 1;
+   } else if(ch == 'z') {
+     double tR;
+     int tP;
+     int tT;
+     cartesianToSpherical(1,1,0,&tR, &tP, &tT);
+     printf("testing: should be (1.4,45,90) is (%f,%d,%d)\n", tR, tP, tT);
    }
    //leaving these in makes the odd flickering thing happen. Flush and swap should only be in display.
    //glFlush();
@@ -95,6 +101,44 @@ void key_up(unsigned char ch,int x,int y)
   }
   else if(ch == 'd') {
     right = 0;
+  }
+}
+
+void mouse_motion(int x, int y) {
+  double lookRho;
+  int lookPhi;
+  int lookTheta;
+  double rightRho;
+  int rightPhi;
+  int rightTheta;
+  if(rotateCamera) {
+    int deltaX = x-lastX;
+    int deltaY = y-lastY;
+    lastX = x;
+    lastY = y;
+    printf("deltaX = %d and deltaY = %d\n", deltaX, deltaY);
+    cartesianToSpherical(lookVec[0], lookVec[1], lookVec[2], &lookRho, &lookPhi, &lookTheta);
+    cartesianToSpherical(rightVec[0], rightVec[1], rightVec[2], &rightRho, &rightPhi, &rightTheta);
+    lookTheta += (int)(sensitivity*(double)deltaX);
+    rightTheta += (int)(sensitivity*(double)deltaX);
+    printf("Rotating by %d.\n", (int)(sensitivity*(double)deltaX));
+    sphericalToCartesian(lookRho, lookPhi, lookTheta, &lookVec[0], &lookVec[1], &lookVec[2]);
+    sphericalToCartesian(rightRho, rightPhi, rightTheta, &rightVec[0], &rightVec[1], &rightVec[2]);
+    printf("Position: (%f,%f,%f) lookVec: (%f,%f,%f) rightVec: (%f,%f,%f)\n", Ex,Ey,Ez, lookVec[0],lookVec[1],lookVec[2], rightVec[0],rightVec[1],rightVec[2]);
+  }
+}
+
+void on_click(int button, int state, int x, int y)
+{
+  if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+    printf("Right Button down!\n");
+    lastX = x;
+    lastY = y;
+    rotateCamera = 1;
+  }
+  if(button == GLUT_RIGHT_BUTTON && state == GLUT_UP) {
+    printf("Right button up!\n");
+    rotateCamera = 0;
   }
 }
 
@@ -145,14 +189,7 @@ void reshape(int width,int height)
 void moveCamera() {
   if (isPersp)
    {
-	  //After gluPerspective sets up the truncated pyramid, gluLookAt puts a camera at the specified coords that uses gluPersp's matrix.
-      //printf("phi = %f and theta = %f and rho = %f\n", ph, th, rh);
-      /*double Ex = -1*rh*Sin(th)*Cos(ph);
-      double Ey = rh*Sin(ph);
-      double Ez = rh*Cos(th)*Cos(ph);*/
       gluLookAt(Ex,Ey,Ez, lookVec[0]+Ex, lookVec[1]+Ey, lookVec[2]+Ez, 0,Cos(ph),0);
-      //printf("ex = %f ey = %f ez = %f\n", Ex, Ey, Ez);
-      //printf("Focusing on (%f,%f,%f)\n", lookVec[0], lookVec[1], lookVec[2]);
    } else {
 	  //  Set view angle
 	  glRotated(ph,1,0,0);
@@ -284,6 +321,8 @@ int main(int argc,char* argv[])
    glutKeyboardFunc(key);
    glutKeyboardUpFunc(key_up);
    glutIdleFunc(idle);
+   glutMotionFunc(mouse_motion);
+   glutMouseFunc(on_click);
    //obj = LoadOBJ("elf_obj.obj");
    //  Pass control to GLUT so it can interact with the user
    glutMainLoop();

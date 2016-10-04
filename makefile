@@ -1,5 +1,5 @@
-# hw4
-EXE=hw4
+# main
+EXE=main
 
 # Main target
 all: $(EXE)
@@ -31,7 +31,7 @@ c.o:
 	g++ -c $(CFLG) $<  $(LIBS)
 
 #  Link
-hw4: hw4.o util.o
+main: main.o util.o
 	gcc -O3 -o $@ $^   $(LIBS)
 
 #  Clean

@@ -14,10 +14,17 @@
 #include <GL/glut.h>
 #endif
 
+//WASD
 int left;
 int right;
 int up;
 int down;
+//Mouse coordinates
+int lastX;
+int lastY;
+int rotateCamera; //boolean set when right click held
+double sensitivity; //determines translation of pixels-traversed-by-pointer to degrees-rotated-by-camera
+
 double w2h;
 double cubeRotate;
 int th;       // Azimuth of view angle
