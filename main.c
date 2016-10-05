@@ -69,16 +69,65 @@ void key(unsigned char ch,int x,int y)
    }
    else if(ch == 'd') {
      right = 1;
-   } else if(ch == 'z') {
-     double tR;
-     int tP;
-     int tT;
-     cartesianToSpherical(1,1,0,&tR, &tP, &tT);
-     printf("testing: should be (1.4,45,90) is (%f,%d,%d)\n", tR, tP, tT);
    }
-   else if(ch == ' '){
+   else if(ch == ' ') {
      ltMove = !ltMove;
    }
+   else if(ch == 'i') {
+     switch(ltParam){
+       case 0:
+         if(ambient < 1) ambient += 0.1;
+         break;
+       case 1:
+         if(diffuse < 1) diffuse += 0.1;
+         break;
+       case 2:
+         if(specular < 1) specular += 0.1;
+       case 3:
+         if(emission < 1) emission += 0.1;
+         break;
+       case 4:
+         shinyness += 1;
+         break;
+      case 5:
+        if(matEmit < 1) matEmit += 0.1;
+        break;
+      case 6:
+        if(matSpec < 1) matSpec += 0.1;
+        break;
+     }
+   }
+   else if(ch == 'k') {
+     switch(ltParam){
+       case 0:
+         if(ambient > 0) ambient -= 0.1;
+         break;
+       case 1:
+         if(diffuse > 0) diffuse -= 0.1;
+         break;
+       case 2:
+         if(specular > 1) specular -= 0.1;
+       case 3:
+         if(emission > 0) emission -= 0.1;
+         break;
+      case 4:
+        shinyness -= 1;
+        break;
+      case 5:
+        if(matEmit > 0) matEmit -= 0.1;
+        break;
+      case 6:
+        if(matSpec > 0) matSpec -= 0.1;
+        break;
+     }
+   }
+   else if (ch == 'j') {
+     if(ltParam < 7) ltParam++;
+     else ltParam = 0;
+   }
+   printf("ltParam = %d\n", ltParam);
+   printf("Light parameters: emission %f, ambient %f, diffuse %f, specular %f\n", emission, ambient, diffuse, specular);
+   printf("Material parameters: shinyness %f, emission %f, specular %f\n", shinyness, matEmit, matSpec);
    //leaving these in makes the odd flickering thing happen. Flush and swap should only be in display.
    //glFlush();
    //glutSwapBuffers();
@@ -218,7 +267,7 @@ void display() {
   glScaled(0.1,0.1,0.1);
   drawCube();
   glPopMatrix();
-  
+
   glPushMatrix();
   drawSeaUrchin();
   //drawCube();
@@ -238,6 +287,7 @@ void display() {
     drawCube();
     glPopMatrix();
   }
+  Print("Property: %d Values: %f, %f, %f, %f", ltParam, emission, ambient, diffuse, specular);
   glFlush();
   glutSwapBuffers(); //this is for double buffered window. Single buffered uses glFlush.
 }

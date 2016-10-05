@@ -28,6 +28,15 @@ void init() {
 	ltY = 0;
 	ltMove = 1;
 	getLtPos();
+	emission = 0.0;
+	ambient = 0.3;
+	diffuse = 1.0;
+	specular = 1.0;
+	rgb = 1.0;
+	ltParam = 0;
+	shinyness = 16;
+	matEmit = emission;
+	matSpec = specular;
 }
 
 void getLtPos(){
@@ -191,13 +200,16 @@ void drawSeaUrchin(){
 
 void setLight(){
 	//Lighting variables, taken from example 26
-  float Emission[]  = {0.0,0.0,0.0,1.0};
-  float Ambient[]   = {0.3,0.3,0.3,1.0};
-  float Diffuse[]   = {1.0,1.0,1.0,1.0};
-  float Specular[]  = {1.0,1.0,1.0,1.0};
+  float Emission[]  = {emission, emission, emission,1.0};
+  float Ambient[]   = {ambient, ambient, ambient,1.0};
+  float Diffuse[]   = {diffuse, diffuse, diffuse,1.0};
+  float Specular[]  = {specular, specular, specular,1.0};
 	float Position[] = {2*Cos(ltAng), ltY, 2*Sin(ltAng), 1.0};
-  float Shinyness[] = {16};
+  float Shinyness[] = {shinyness};
 	float RGBA[4] = {1,1,1,1};
+
+	float MatSpec[] = {matSpec, matSpec, matSpec, 1.0};
+	float MatEmit[] = {matEmit, matEmit, matEmit, 1.0};
 
 	//  Set ambient, diffuse, specular components and position of light 0
   glLightfv(GL_LIGHT0,GL_AMBIENT ,Ambient);
@@ -208,6 +220,6 @@ void setLight(){
   glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,Shinyness);
   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,RGBA);
   glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,RGBA);
-  glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,Specular);
-  glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,MatSpec);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,MatEmit);
 }

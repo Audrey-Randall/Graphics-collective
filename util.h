@@ -30,6 +30,17 @@ double ltAng; //angle
 double ltY;
 int ltMove; //boolean
 double ltPos[4];
+int ltParam; //which property of light am I changing with j/l? 0 = emission, 1 = ambient, 2 = diffuse, 3 = specular
+double emission;
+double ambient;
+double diffuse;
+double specular;
+double rgb;
+
+//Materials
+double matSpec;
+double matEmit;
+double shinyness;
 
 double w2h;
 double cubeRotate;
