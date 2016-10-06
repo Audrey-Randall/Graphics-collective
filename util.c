@@ -3,6 +3,7 @@
 char* text[] = {"","2D","3D constant Z","3D","4D"};  // Dimension display text
 
 void init() {
+	frame = 0.0;
 	cubeRotate = 0;
 	th=0;       // Azimuth of view angle
 	ph=0;       // Elevation of view angle
@@ -196,6 +197,54 @@ void drawSeaUrchin(){
     glPopMatrix();
   }
   //glutSolidSphere(0.7, 15, 15);
+}
+
+void drawSphere(){
+	//set r and h to draw cone for sphere top and bottom
+	/*glBegin(GL_TRIANGLES);
+  int i;
+  for(i = 0; i <360; i+=15) {
+		double v1[3] = {-r*Sin(i), -r*Cos(i), h};
+		double v2[3] = {r*Sin(i+15)-r*Sin(i), r*Cos(i+15)-r*Cos(i), 0};
+		double normal[3];
+		cross(v1, v2, normal);
+		//printf("Normal is (%f,%f,%f)\n", normal[0], normal[1], normal[2]);
+		glNormal3f(normal[0], normal[1], normal[2]);
+	  glVertex3d(0,0,h);
+    glVertex3d(r*Sin(i),r*Cos(i), 0);
+		glVertex3d(r*Sin(i+15), r*Cos(i+15), 0);
+  }
+  glEnd();*/
+	glBegin(GL_QUADS);
+	printf("\n\n\n");
+	int phi;
+	int theta;
+	int blah = 0;
+	for(phi = -180; phi < 180; phi+=15){
+		for(theta = 0; theta < 360; theta+=15){
+			double x;
+			double y;
+			double z;
+			sphericalToCartesian(1, phi, theta, &x, &y, &z);
+			glNormal3f(x,y,z);
+			glVertex3d(x,y,z);
+			if(blah == 0) printf("(%f,%f,%f)\n",x,y,z);
+			sphericalToCartesian(1, phi+15, theta, &x, &y, &z);
+			glNormal3f(x,y,z);
+			glVertex3d(x,y,z);
+			if(blah == 0) printf("(%f,%f,%f)\n",x,y,z);
+			sphericalToCartesian(1, phi+15, theta+15, &x, &y, &z);
+			glNormal3f(x,y,z);
+			glVertex3d(x,y,z);
+			if(blah == 0) printf("(%f,%f,%f)\n",x,y,z);
+			sphericalToCartesian(1, phi, theta+15, &x, &y, &z);
+			glNormal3f(x,y,z);
+			glVertex3d(x,y,z);
+			if(blah == 0) printf("(%f,%f,%f)\n",x,y,z);
+			blah = 1;
+		}
+	}
+	glEnd();
 }
 
 void setLight(){

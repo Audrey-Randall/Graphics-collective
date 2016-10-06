@@ -124,14 +124,16 @@ void key(unsigned char ch,int x,int y)
    else if (ch == 'j') {
      if(ltParam < 7) ltParam++;
      else ltParam = 0;
+   } else if (ch == 'z'){
+     double x;
+     double y;
+     double z;
+     sphericalToCartesian(1.0, 45, 45, &x, &y, &z);
+     printf("(%f,%f,%f) should be (0.5,0.5,0.707)\n", x, y, z);
    }
    printf("ltParam = %d\n", ltParam);
    printf("Light parameters: emission %f, ambient %f, diffuse %f, specular %f\n", emission, ambient, diffuse, specular);
    printf("Material parameters: shinyness %f, emission %f, specular %f\n", shinyness, matEmit, matSpec);
-   //leaving these in makes the odd flickering thing happen. Flush and swap should only be in display.
-   //glFlush();
-   //glutSwapBuffers();
-
    fov = fmod(fov, 180);
    Project(fov,w2h,dim);
    //  Tell GLUT it is necessary to redisplay the scene
@@ -172,8 +174,10 @@ void mouse_motion(int x, int y) {
     lookTheta += (int)(sensitivity*(double)deltaX);
     rightTheta += (int)(sensitivity*(double)deltaX);
     printf("Rotating by %d.\n", (int)(sensitivity*(double)deltaX));
-    sphericalToCartesian(lookRho, lookPhi, lookTheta, &lookVec[0], &lookVec[1], &lookVec[2]);
-    sphericalToCartesian(rightRho, rightPhi, rightTheta, &rightVec[0], &rightVec[1], &rightVec[2]);
+    double lookLen = sqrt(lookVec[0]*lookVec[0]+lookVec[1]*lookVec[1]+lookVec[2]*lookVec[2]);
+    double rightLen = sqrt(rightVec[0]*rightVec[0]+rightVec[1]*rightVec[1]+rightVec[2]*rightVec[2]);
+    sphericalToCartesian(lookRho/lookLen, lookPhi/lookLen, lookTheta/lookLen, &lookVec[0], &lookVec[1], &lookVec[2]);
+    sphericalToCartesian(rightRho/rightLen, rightPhi/rightLen, rightTheta/rightLen, &rightVec[0], &rightVec[1], &rightVec[2]);
     printf("Position: (%f,%f,%f) lookVec: (%f,%f,%f) rightVec: (%f,%f,%f)\n", Ex,Ey,Ez, lookVec[0],lookVec[1],lookVec[2], rightVec[0],rightVec[1],rightVec[2]);
   }
 }
@@ -261,6 +265,8 @@ void display() {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  glShadeModel(GL_SMOOTH);
+
   //draw light placeholder
   glPushMatrix();
   glTranslated(ltPos[0], ltPos[1], ltPos[2]);
@@ -271,6 +277,7 @@ void display() {
   glPushMatrix();
   drawSeaUrchin();
   //drawCube();
+  //drawSphere();
   glPopMatrix();
 
   //glDisable(GL_LIGHTING);
@@ -284,7 +291,8 @@ void display() {
     double scalar = fabs(0.05*Sin(cubeRotate+(180*i/PI)))+0.1;
     glScaled(scalar, scalar, scalar);
     glRotated(cubeRotate, cos(i), sin(i), 0);
-    drawCube();
+    //drawCube();
+    drawSeaUrchin();
     glPopMatrix();
   }
   Print("Property: %d Values: %f, %f, %f, %f", ltParam, emission, ambient, diffuse, specular);
@@ -299,49 +307,54 @@ void idle()
 {
    //  Elapsed time in seconds
    double t = glutGet(GLUT_ELAPSED_TIME)/1000.0;
-   if(shouldMove) cubeRotate = fmod(100*t,360.0);
-   if(ltMove) ltAng = fmod(ltAng+2, 360.0);
+   if((t-frame) <= (1./60.)) {
+     return;
+   } else {
+     frame = t;
+     if(shouldMove) cubeRotate = fmod(100*t,360.0);
+     if(ltMove) ltAng = fmod(ltAng+2, 360.0);
 
-   if(up) {
-     printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
-     double step[3];
-     double focLen = sqrt((lookVec[0])*(lookVec[0])+(lookVec[1])*(lookVec[1])+(lookVec[2])*(lookVec[2]));
-     printf("focLen = %f\n", focLen);
-     Ex += 0.2*lookVec[0]/focLen;
-     Ey += 0.2*lookVec[1]/focLen;
-     Ez += 0.2*lookVec[2]/focLen;
-     cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-     printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
-   }
-   if(down) {
-     printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
-     double focLen = sqrt((lookVec[0])*(lookVec[0])+(lookVec[1])*(lookVec[1])+(lookVec[2])*(lookVec[2]));
-     printf("focLen is %f\n", focLen);
-     Ex -= 0.2*lookVec[0]/focLen;
-     Ey -= 0.2*lookVec[1]/focLen;
-     Ez -= 0.2*lookVec[2]/focLen;
-     cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-     printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
-   }
-   if(left) {
-     printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
-     Ex -= 0.2*rightVec[0]; //rightVec is a unit vector
-     Ey -= 0.2*rightVec[1];
-     Ez -= 0.2*rightVec[2];
-     cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-     printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
-   }
-   if(right) {
-     printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
-     Ex += 0.2*rightVec[0];
-     Ey += 0.2*rightVec[1];
-     Ez += 0.2*rightVec[2];
-     cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-     printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
-   }
+     if(up) {
+       printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+       double step[3];
+       double focLen = sqrt((lookVec[0])*(lookVec[0])+(lookVec[1])*(lookVec[1])+(lookVec[2])*(lookVec[2]));
+       printf("focLen = %f\n", focLen);
+       Ex += 0.2*lookVec[0]/focLen;
+       Ey += 0.2*lookVec[1]/focLen;
+       Ez += 0.2*lookVec[2]/focLen;
+       cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
+       printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
+     }
+     if(down) {
+       printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+       double focLen = sqrt((lookVec[0])*(lookVec[0])+(lookVec[1])*(lookVec[1])+(lookVec[2])*(lookVec[2]));
+       printf("focLen is %f\n", focLen);
+       Ex -= 0.2*lookVec[0]/focLen;
+       Ey -= 0.2*lookVec[1]/focLen;
+       Ez -= 0.2*lookVec[2]/focLen;
+       cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
+       printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
+     }
+     if(left) {
+       printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+       Ex -= 0.2*rightVec[0]; //rightVec is a unit vector
+       Ey -= 0.2*rightVec[1];
+       Ez -= 0.2*rightVec[2];
+       cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
+       printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
+     }
+     if(right) {
+       printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+       Ex += 0.2*rightVec[0];
+       Ey += 0.2*rightVec[1];
+       Ez += 0.2*rightVec[2];
+       cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
+       printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
+     }
 
-   //  Tell GLUT it is necessary to redisplay the scene
-   glutPostRedisplay();
+     //  Tell GLUT it is necessary to redisplay the scene
+     glutPostRedisplay();
+   }
 }
 
 int main(int argc,char* argv[])

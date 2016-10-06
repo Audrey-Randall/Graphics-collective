@@ -59,6 +59,8 @@ double rightVec[3]; //Vector that points to my right at all times, currently uni
 double fov; //field of view
 int isPersp; //perspective or orthogonal projection
 int spineAnglesSet;
+
+double frame;
 #define SPINES 100
 double spineAngles[SPINES*4];
 #define LEN 8192  // Maximum length of text string
