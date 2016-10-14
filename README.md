@@ -10,6 +10,8 @@ Pressing i increases the selected lighting variable, and pressing k decreases it
 5 - material emission
 6 - specular quality of material
 
+Press space to start and stop light rotation.
+
 EXTRA STUFF:
 To toggle cube rotation, press 1. Arrow keys move, and page up and page down zoom, while in an orthographic view.
 

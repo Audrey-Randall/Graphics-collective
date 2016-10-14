@@ -1,5 +1,6 @@
 
 #include "util.h"
+#include "shaders.h"
 /*
   Audrey Randall's homework 4
   Citations:
@@ -274,10 +275,11 @@ void display() {
   drawCube();
   glPopMatrix();
 
+  //Use shader?
+  glUseProgram(shader1);
+
   glPushMatrix();
   drawSeaUrchin();
-  //drawCube();
-  //drawSphere();
   glPopMatrix();
 
   //glDisable(GL_LIGHTING);
@@ -291,8 +293,7 @@ void display() {
     double scalar = fabs(0.05*Sin(cubeRotate+(180*i/PI)))+0.1;
     glScaled(scalar, scalar, scalar);
     glRotated(cubeRotate, cos(i), sin(i), 0);
-    //drawCube();
-    drawSeaUrchin();
+    drawCube();
     glPopMatrix();
   }
   Print("Property: %d Values: %f, %f, %f, %f", ltParam, emission, ambient, diffuse, specular);
@@ -380,6 +381,17 @@ int main(int argc,char* argv[])
    glutMotionFunc(mouse_motion);
    glutMouseFunc(on_click);
    //obj = LoadOBJ("elf_obj.obj");
+
+   glewInit();
+   	if (GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader)
+   		printf("Ready for GLSL\n");
+   	else {
+   		printf("No GLSL support\n");
+   		exit(1);
+   	}
+
+    //Shaders
+    shader1 = CreateShaderProg("simple.vert","simple.frag");
    //  Pass control to GLUT so it can interact with the user
    glutMainLoop();
    //  Return code

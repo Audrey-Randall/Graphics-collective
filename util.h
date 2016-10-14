@@ -1,11 +1,18 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#define USEGLEW
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
+
+#ifdef USEGLEW
+#include <GL/glew.h>
+#endif
 //  OpenGL with prototypes for glext
 #define GL_GLEXT_PROTOTYPES
 #ifdef __APPLE__
@@ -13,6 +20,11 @@
 #else
 #include <GL/glut.h>
 #endif
+
+
+//#include "textfile.h"
+//Shader thingies
+/*GLhandleARB*/int v,f,f2,p;
 
 //WASD
 int left;
@@ -78,4 +90,8 @@ void drawAxes();
 void setSpineAngles(double * arr, int size);
 void drawSeaUrchin();
 void getLtPos();
+void drawSphere();
+void setLight();
+void init();
+
 #endif

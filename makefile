@@ -6,8 +6,8 @@ all: $(EXE)
 
 #  MinGW
 ifeq "$(OS)" "Windows_NT"
-CFLG=-O3 -Wall
-LIBS=-lglut32cu -lglu32 -lopengl32
+CFLG=-O3 -Wall -DUSEGLEW
+LIBS=-lglew32 -lglut32cu -lglu32 -lopengl32
 CLEAN=del *.exe *.o *.a
 else
 #  OSX
@@ -31,7 +31,7 @@ c.o:
 	g++ -c $(CFLG) $<  $(LIBS)
 
 #  Link
-main: main.o util.o
+main: main.o util.o shaders.o
 	gcc -O3 -o $@ $^   $(LIBS)
 
 #  Clean
