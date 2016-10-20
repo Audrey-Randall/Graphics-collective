@@ -279,7 +279,8 @@ void display() {
   glUseProgram(shader1);
 
   glPushMatrix();
-  drawSeaUrchin();
+  //drawSeaUrchin();
+  glutSolidTeapot(0.5);
   glPopMatrix();
 
   //glDisable(GL_LIGHTING);
@@ -391,7 +392,7 @@ int main(int argc,char* argv[])
    	}
 
     //Shaders
-    shader1 = CreateShaderProg("simple.vert","simple.frag");
+    shader1 = CreateShaderProg("pix_light.vert","pix_light.frag");
    //  Pass control to GLUT so it can interact with the user
    glutMainLoop();
    //  Return code

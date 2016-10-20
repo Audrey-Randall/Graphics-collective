@@ -18,7 +18,10 @@ char* ReadText(char *file)
    buffer = (char*)malloc(n+1);
    if (!buffer) printf("Cannot allocate %d bytes for text file %s\n",n+1,file);
    //  Snarf the file
-   if (fread(buffer,n,1,f)!=1) printf("Cannot read %d bytes for text file %s\n",n,file);
+   if (fread(buffer,n,1,f) < 0) {
+     printf("Cannot read %d bytes for text file %s\n",n,file);
+     perror("Perror says");
+   }
    buffer[n] = 0;
    //  Close and return
    fclose(f);
