@@ -241,9 +241,13 @@ void drawPlane(float width, float height, int split) {
   glNormal3f(0,0,1);
   for(i = -1; i < 1; i+=inc) {
     for(j = -1; j < 1; j+=inc) {
+      glTexCoord2f(i/2+1, j/2+1);
       glVertex3d(i, j, 0);
+      glTexCoord2f(i/2+1, (j+inc)/2+1);
       glVertex3d(i, j+inc, 0);
+      glTexCoord2f((i+inc)/2+1, (j+inc)/2+1);
       glVertex3d(i+inc, j+inc, 0);
+      glTexCoord2f((i+inc)/2+1, j/2+1);
       glVertex3d(i+inc, j, 0);
     }
   }

@@ -279,7 +279,7 @@ void display() {
   glUseProgram(shader1);
   int texUnitLoc = glGetUniformLocation(shader1, "tex");
   if(texUnitLoc < 0) {
-    //printf("Failure in shader crap\n");
+    printf("Failure in shader crap\n");
   } else {
     //we set shader1 as OpenGL's shader number 0
     glProgramUniform1i(shader1, texUnitLoc, 0);
