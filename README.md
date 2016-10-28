@@ -1,8 +1,6 @@
 To run: No command line arguments are needed.
 
-I sent you an email about this, but here's the short version:
-
-So this project was an attempt to port all my code over to use shaders, and was a complete failure. An hour ago I had it working, or at least displaying a texture, and then I changed something and it broke everything and I couldn't fix it. Turns out trying to use shaders is REALLY REALLY HARD. I don't have enough time to start from scratch tonight, which I think is what I'll have to do to get this working. For what it's worth, I think this is pretty close to at least being able to display a texture based on the pixel's absolute position in the window? As far as I know there's only one wrong line of code somewhere in all this junk...
+The grid overlaying the plane is just for error checking; it doesn't have texture coordinates so it's the color of the first pixel in the stone image. Shader lighting, normal mapping from a texture, and textures are working as far as I can tell! I'm super excited!
 
 Press space to start and stop light rotation.
 
