@@ -29,6 +29,8 @@ static void Reverse(void* x,const int n);
 unsigned int LoadTexBMP(const char* file);
 //these are from Prof. Schreuder's example 27
 char* ReadText(char *file);
+void PrintProgramLog(int obj);
+void PrintShaderLog(int obj,char* file);
 int CreateShader(GLenum type,char* file);
 int CreateShaderProg(char* VertFile, char* FragFile);
 void drawPlane(float width, float height, int split);
