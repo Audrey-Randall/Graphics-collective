@@ -28,6 +28,7 @@
 
 //Textures
 unsigned int checker;
+unsigned int waterNormals;
 
 //WASD
 int left;

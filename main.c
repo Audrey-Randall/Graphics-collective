@@ -281,8 +281,14 @@ void display() {
   if(texUnitLoc < 0) {
     printf("Failure in shader crap\n");
   } else {
-    //we set shader1 as OpenGL's shader number 0
+    //set the uniform in shader1 called tex to texture 0
     glProgramUniform1i(shader1, texUnitLoc, 0);
+  }
+  int normalLoc = glGetUniformLocation(shader1, "normal_tex");
+  if(normalLoc < 0) {
+    printf("Failure in shader crap\n");
+  } else {
+    glProgramUniform1i(shader1, normalLoc, 1);
   }
 
   glPushMatrix();
@@ -399,7 +405,10 @@ int main(int argc,char* argv[])
    		exit(1);
    	}
     //Textures
-    checker = LoadTexBMP("tiles.bmp");
+    checker = LoadTexBMP("texture_4.bmp");
+    glActiveTexture(GL_TEXTURE1);
+    waterNormals = LoadTexBMP("normal_4.bmp");
+    glActiveTexture(GL_TEXTURE0);
 
     //Shaders
     shader1 = CreateShaderProg("pix_light.vert","pix_light.frag");
