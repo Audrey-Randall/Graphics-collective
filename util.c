@@ -250,6 +250,7 @@ void drawSphere(){
 }
 
 void setLight(){
+	//printf("Light is at (%f, %f, %f)\n", 2*Cos(ltAng), ltY, 2*Sin(ltAng));
 	//Lighting variables, taken from example 26
   float Emission[]  = {emission, emission, emission,1.0};
   float Ambient[]   = {ambient, ambient, ambient,1.0};

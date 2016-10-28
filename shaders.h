@@ -22,9 +22,15 @@
 
 int shader1;
 
+//from Prof. Schreuder's example 19
+void ErrCheck(const char* where);
+void Fatal(const char* format , ...);
+static void Reverse(void* x,const int n);
+unsigned int LoadTexBMP(const char* file);
 //these are from Prof. Schreuder's example 27
 char* ReadText(char *file);
 int CreateShader(GLenum type,char* file);
 int CreateShaderProg(char* VertFile, char* FragFile);
+void drawPlane(float width, float height, int split);
 
 #endif

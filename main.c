@@ -277,16 +277,24 @@ void display() {
 
   //Use shader?
   glUseProgram(shader1);
+  int texUnitLoc = glGetUniformLocation(shader1, "tex");
+  if(texUnitLoc < 0) {
+    //printf("Failure in shader crap\n");
+  } else {
+    //we set shader1 as OpenGL's shader number 0
+    glProgramUniform1i(shader1, texUnitLoc, 0);
+  }
 
   glPushMatrix();
   //drawSeaUrchin();
-  glutSolidTeapot(0.5);
+  //glutSolidTeapot(0.5);
+  drawPlane(1,1,10);
   glPopMatrix();
 
   //glDisable(GL_LIGHTING);
   //glDisable(GL_LIGHT0);
 
-  double rad = 1.6;
+  /*double rad = 1.6;
   double i;
   for(i = 0; i < (2*PI); i+=(PI/4)) {
     glPushMatrix();
@@ -297,7 +305,7 @@ void display() {
     drawCube();
     glPopMatrix();
   }
-  Print("Property: %d Values: %f, %f, %f, %f", ltParam, emission, ambient, diffuse, specular);
+  Print("Property: %d Values: %f, %f, %f, %f", ltParam, emission, ambient, diffuse, specular);*/
   glFlush();
   glutSwapBuffers(); //this is for double buffered window. Single buffered uses glFlush.
 }
@@ -390,9 +398,12 @@ int main(int argc,char* argv[])
    		printf("No GLSL support\n");
    		exit(1);
    	}
+    //Textures
+    checker = LoadTexBMP("tiles.bmp");
 
     //Shaders
     shader1 = CreateShaderProg("pix_light.vert","pix_light.frag");
+
    //  Pass control to GLUT so it can interact with the user
    glutMainLoop();
    //  Return code

@@ -26,6 +26,9 @@
 //Shader thingies
 /*GLhandleARB*/int v,f,f2,p;
 
+//Textures
+unsigned int checker;
+
 //WASD
 int left;
 int right;

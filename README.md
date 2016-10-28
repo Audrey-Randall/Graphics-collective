@@ -1,14 +1,8 @@
 To run: No command line arguments are needed.
 
-LIGHTING ASSIGNMENT STUFF:
-Pressing i increases the selected lighting variable, and pressing k decreases it. Pressing j changes the variable selected. The variables for lighting and material are printed to stdout, as well as the selected variable, which is bound to ltParam. Since ltParam is an int, its meaning is as follows:
-0 - light ambiance
-1 - light diffusion
-2 - specular quality of light
-3 - no longer bound
-4 - material shininess
-5 - material emission
-6 - specular quality of material
+I sent you an email about this, but here's the short version:
+
+So this project was an attempt to port all my code over to use shaders, and was a complete failure. An hour ago I had it working, or at least displaying a texture, and then I changed something and it broke everything and I couldn't fix it. Turns out trying to use shaders is REALLY REALLY HARD. I don't have enough time to start from scratch tonight, which I think is what I'll have to do to get this working. For what it's worth, I think this is pretty close to at least being able to display a texture based on the pixel's absolute position in the window? As far as I know there's only one wrong line of code somewhere in all this junk...
 
 Press space to start and stop light rotation.
 
