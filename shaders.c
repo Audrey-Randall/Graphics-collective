@@ -259,7 +259,7 @@ void drawPlane(float width, float height, int split) {
     }
   }
   glEnd();
-  glDisable(GL_LIGHTING);
+  /*glDisable(GL_LIGHTING);
   glBegin(GL_LINES);
   glColor3f(255, 0, 255);
   glNormal3f(0,0,1);
@@ -276,5 +276,5 @@ void drawPlane(float width, float height, int split) {
     }
   }
   glEnd();
-  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHTING);*/
 }

@@ -286,13 +286,13 @@ void display() {
   }
   int normalLoc = glGetUniformLocation(shader1, "normal_tex");
   if(normalLoc < 0) {
-    //printf("Failure in shader crap: uniform normal_tex\n");
+    printf("Failure in shader crap: uniform normal_tex\n");
   } else {
     glProgramUniform1i(shader1, normalLoc, 1);
   }
   int frameLoc = glGetUniformLocation(shader1, "frame");
   if(frameLoc < 0) {
-    //printf("Failure in shader crap: uniform frame. Main's frame = %f\n", frameInSec);
+    printf("Failure in shader crap: uniform frame. Main's frame = %f\n", frameInSec);
   } else {
     glProgramUniform1i(shader1, frameLoc, frameInSec);
   }
