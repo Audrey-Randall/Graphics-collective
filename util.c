@@ -6,6 +6,7 @@ char* text[] = {"","2D","3D constant Z","3D","4D"};  // Dimension display text
 
 void init() {
 	frame = 0.0;
+	frameInSec = 0;
 	cubeRotate = 0;
 	th=0;       // Azimuth of view angle
 	ph=0;       // Elevation of view angle

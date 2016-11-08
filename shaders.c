@@ -239,15 +239,22 @@ void drawPlane(float width, float height, int split) {
   float inc = 2/(float)split;
   glBegin(GL_QUADS);
   glNormal3f(0,0,1);
-  for(i = -1; i < 1; i+=inc) {
-    for(j = -1; j < 1; j+=inc) {
-      glTexCoord2f(i/2+1, j/2+1);
+  for(i = -1; i < 1-inc; i+=inc) {
+    for(j = -1; j < 1-inc; j+=inc) {
+      /*if(i == -1) {
+        printf("\n\n (i,j) = (%f,%f)\n", i, j);
+        printf("\tTexCoord 1: (%f,%f)\n", (i+1)/2, (j+1)/2);
+        printf("\tTexCoord 2: (%f,%f)\n", (i+1)/2, (j+inc+1)/2);
+        printf("\tTexCoord 3: (%f,%f)\n", (i+inc+1)/2, (j+inc+1)/2);
+        printf("\tTexCoord 4: (%f,%f)\n", (i+inc+1)/2, (j+1)/2);
+      }*/
+      glTexCoord2f((i+1)/2, (j+1)/2);
       glVertex3d(i, j, 0);
-      glTexCoord2f(i/2+1, (j+inc)/2+1);
+      glTexCoord2f((i+1)/2, (j+inc+1)/2);
       glVertex3d(i, j+inc, 0);
-      glTexCoord2f((i+inc)/2+1, (j+inc)/2+1);
+      glTexCoord2f((i+inc+1)/2, (j+inc+1)/2);
       glVertex3d(i+inc, j+inc, 0);
-      glTexCoord2f((i+inc)/2+1, j/2+1);
+      glTexCoord2f((i+inc+1)/2, (j+1)/2);
       glVertex3d(i+inc, j, 0);
     }
   }
@@ -256,8 +263,8 @@ void drawPlane(float width, float height, int split) {
   glBegin(GL_LINES);
   glColor3f(255, 0, 255);
   glNormal3f(0,0,1);
-  for(i = -1; i < 1; i+=inc) {
-    for(j = -1; j < 1; j+=inc) {
+  for(i = -1; i < 1-inc; i+=inc) {
+    for(j = -1; j < 1-inc; j+=inc) {
       glVertex3d(i, j, 0.0001);
       glVertex3d(i, j+inc, 0.0001);
       glVertex3d(i, j+inc, 0.0001);

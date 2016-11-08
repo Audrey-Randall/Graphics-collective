@@ -279,16 +279,22 @@ void display() {
   glUseProgram(shader1);
   int texUnitLoc = glGetUniformLocation(shader1, "tex");
   if(texUnitLoc < 0) {
-    printf("Failure in shader crap\n");
+    printf("Failure in shader crap: uniform tex\n");
   } else {
     //set the uniform in shader1 called tex to texture 0
     glProgramUniform1i(shader1, texUnitLoc, 0);
   }
   int normalLoc = glGetUniformLocation(shader1, "normal_tex");
   if(normalLoc < 0) {
-    printf("Failure in shader crap\n");
+    //printf("Failure in shader crap: uniform normal_tex\n");
   } else {
     glProgramUniform1i(shader1, normalLoc, 1);
+  }
+  int frameLoc = glGetUniformLocation(shader1, "frame");
+  if(frameLoc < 0) {
+    //printf("Failure in shader crap: uniform frame. Main's frame = %f\n", frameInSec);
+  } else {
+    glProgramUniform1i(shader1, frameLoc, frameInSec);
   }
 
   glPushMatrix();
@@ -327,6 +333,8 @@ void idle()
      return;
    } else {
      frame = t;
+     if(frameInSec < 180) frameInSec++;
+     else frameInSec = 0;
      if(shouldMove) cubeRotate = fmod(100*t,360.0);
      if(ltMove) ltAng = fmod(ltAng+2, 360.0);
 
@@ -385,7 +393,7 @@ int main(int argc,char* argv[])
    //  Request 500 x 500 pixel window
    glutInitWindowSize(500,500);
    //  Create the window
-   glutCreateWindow("Oogluong the Elder Sea Urchin (Audrey Randall)");
+   glutCreateWindow("Shader Tests (Audrey Randall)");
 
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
@@ -405,9 +413,9 @@ int main(int argc,char* argv[])
    		exit(1);
    	}
     //Textures
-    checker = LoadTexBMP("texture_4.bmp");
+    checker = LoadTexBMP("textures/water_tex_1.bmp");
     glActiveTexture(GL_TEXTURE1);
-    waterNormals = LoadTexBMP("normal_4.bmp");
+    waterNormals = LoadTexBMP("textures/water_normals.bmp");
     glActiveTexture(GL_TEXTURE0);
 
     //Shaders

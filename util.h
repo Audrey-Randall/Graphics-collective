@@ -77,6 +77,7 @@ int isPersp; //perspective or orthogonal projection
 int spineAnglesSet;
 
 double frame;
+int frameInSec;
 #define SPINES 100
 double spineAngles[SPINES*4];
 #define LEN 8192  // Maximum length of text string
