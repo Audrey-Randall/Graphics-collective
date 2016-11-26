@@ -41,9 +41,11 @@ void init() {
 	shinyness = 16;
 	matEmit = emission;
 	matSpec = specular;
+	drawLight = 1;
 }
 
 void getLtPos(){
+	//2*Cos(ltAng), ltY, 2*Sin(ltAng), 1.0
 	ltPos[0] = 2*Cos(ltAng);
 	ltPos[1] = ltY;
 	ltPos[2] = 2*Sin(ltAng);
@@ -248,6 +250,80 @@ void drawSphere(){
 		}
 	}
 	glEnd();
+}
+
+//Same as drawCube but with texture coordinates
+//i is which step, h = height of step,
+drawStep(){
+    glBegin(GL_TRIANGLES);
+    glColor3f(0.38,0.355,0.30); //yellow
+    glNormal3f(-1,0,0);
+    glVertex3d(-1.0f,-1.0f,-1.0f);
+    glVertex3d(-1.0f,-1.0f, 1.0f);
+    glVertex3d(-1.0f, 1.0f, 1.0f);
+    glVertex3d(-1.0f,-1.0f,-1.0f);
+    glVertex3d(-1.0f, 1.0f, 1.0f);
+    glVertex3d(-1.0f, 1.0f,-1.0f);
+
+    glNormal3f(0,0,-1);
+    glColor3f(0.225,0.2,0.15); //red
+    glVertex3d(1.0f, 1.0f,-1.0f);
+    glVertex3d(-1.0f,-1.0f,-1.0f);
+    glVertex3d(-1.0f, 1.0f,-1.0f);
+    glVertex3d(1.0f, 1.0f,-1.0f);
+    glVertex3d(1.0f,-1.0f,-1.0f);
+    glVertex3d(-1.0f,-1.0f,-1.0f);
+
+    glNormal3f(0,-1,0);
+    glColor3f(0.613,0.5277,0.3611); //green
+    glVertex3d(1.0f,-1.0f, 1.0f);
+    glVertex3d(-1.0f,-1.0f,-1.0f);
+    glVertex3d(1.0f,-1.0f,-1.0f);
+    glVertex3d(1.0f,-1.0f, 1.0f);
+    glVertex3d(-1.0f,-1.0f, 1.0f);
+    glVertex3d(-1.0f,-1.0f,-1.0f);
+
+    glNormal3f(0,0,1);
+    glColor3f(0.38,0.355,0.30);
+    glVertex3d(-1.0f, 1.0f, 1.0f);
+    glVertex3d(-1.0f,-1.0f, 1.0f);
+    glVertex3d(1.0f,-1.0f, 1.0f);
+    glVertex3d(1.0f, 1.0f, 1.0f);
+    glVertex3d(-1.0f, 1.0f, 1.0f);
+    glVertex3d(1.0f,-1.0f, 1.0f);
+
+    glNormal3f(1,0,0);
+    glColor3f(0.225,0.2,0.15);
+    glVertex3d(1.0f,-1.0f,-1.0f);
+    glVertex3d(1.0f, 1.0f, 1.0f);
+    glVertex3d(1.0f,-1.0f, 1.0f);
+    glVertex3d(1.0f, 1.0f, 1.0f);
+    glVertex3d(1.0f,-1.0f,-1.0f);
+    glVertex3d(1.0f, 1.0f,-1.0f);
+
+    glNormal3f(0,1,0);
+    glColor3f(0.613,0.5277,0.3611); //green
+    glVertex3d(1.0f, 1.0f, 1.0f);
+    glVertex3d(-1.0f, 1.0f,-1.0f);
+    glVertex3d(-1.0f, 1.0f, 1.0f);
+    glVertex3d(1.0f, 1.0f, 1.0f);
+    glVertex3d(1.0f, 1.0f,-1.0f);
+    glVertex3d(-1.0f, 1.0f,-1.0f);
+
+    glEnd();
+    //glFlush();
+}
+
+//n is number of stairs, h is height in world coords
+void drawStairs(int n, float h, float w, float l) {
+	int i;
+	for(i = 1; i < n; i++) {
+		glPushMatrix();
+		glTranslated(0, h/n*i, h/n*i);
+		glScaled(w,h/n*i, l/n);
+		drawStep();
+		glPopMatrix();
+	}
 }
 
 void setLight(){

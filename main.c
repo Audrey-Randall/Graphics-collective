@@ -54,7 +54,8 @@ void key(unsigned char ch,int x,int y)
 	 if(fov > 25) fov-=5;
    }
    else if (ch == 'g') {
-	 fov=0;
+	 //fov=0;
+    drawLight = !drawLight;
    }
    else if (ch == 'p') {
 	    isPersp = !isPersp;
@@ -269,11 +270,13 @@ void display() {
   glShadeModel(GL_SMOOTH);
 
   //draw light placeholder
-  glPushMatrix();
-  glTranslated(ltPos[0], ltPos[1], ltPos[2]);
-  glScaled(0.1,0.1,0.1);
-  drawCube();
-  glPopMatrix();
+  if(drawLight) {
+    glPushMatrix();
+    glTranslated(ltPos[0], ltPos[1], ltPos[2]);
+    glScaled(0.1,0.1,0.1);
+    drawCube();
+    glPopMatrix();
+  }
 
   //Use shader?
   glUseProgram(shader1);
@@ -292,15 +295,24 @@ void display() {
   }
   int frameLoc = glGetUniformLocation(shader1, "frame");
   if(frameLoc < 0) {
-    printf("Failure in shader crap: uniform frame. Main's frame = %f\n", frameInSec);
+    //printf("Failure in shader crap: uniform frame. Main's frame = %f\n", frameInSec);
   } else {
     glProgramUniform1i(shader1, frameLoc, frameInSec);
   }
 
   glPushMatrix();
+  glRotated(90, 1,0,0);
+  drawPlane(1,1,10);
+  glPopMatrix();
+  glutSolidTeapot(1);
+
+  glUseProgram(0);
+  glDisable(GL_LIGHTING);
+  glPushMatrix();
   //drawSeaUrchin();
   //glutSolidTeapot(0.5);
-  drawPlane(1,1,10);
+  glTranslated(0, -0.51, 0);
+  drawStairs(10, 0.5, 1., 1.);
   glPopMatrix();
 
   //glDisable(GL_LIGHTING);
@@ -415,7 +427,7 @@ int main(int argc,char* argv[])
     //Textures
     checker = LoadTexBMP("textures/water_tex_1.bmp");
     glActiveTexture(GL_TEXTURE1);
-    waterNormals = LoadTexBMP("textures/water_normals.bmp");
+    waterNormals = LoadTexBMP("textures/normal_4.bmp");
     glActiveTexture(GL_TEXTURE0);
 
     //Shaders

@@ -75,6 +75,7 @@ double rightVec[3]; //Vector that points to my right at all times, currently uni
 double fov; //field of view
 int isPersp; //perspective or orthogonal projection
 int spineAnglesSet;
+int drawLight;
 
 double frame;
 int frameInSec;
@@ -96,6 +97,7 @@ void setSpineAngles(double * arr, int size);
 void drawSeaUrchin();
 void getLtPos();
 void drawSphere();
+void drawStairs(int n, float h, float w, float l);
 void setLight();
 void init();
 
