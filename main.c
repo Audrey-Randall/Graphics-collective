@@ -245,7 +245,11 @@ void reshape(int width,int height)
 void moveCamera() {
   if (isPersp)
    {
-      gluLookAt(Ex,Ey,Ez, lookVec[0]+Ex, lookVec[1]+Ey, lookVec[2]+Ez, 0,Cos(ph),0);
+    float up;
+    if(Cos(ph) > 0) up = 1;
+    else up = -1;
+    gluLookAt(Ex,Ey,Ez, lookVec[0]+Ex, lookVec[1]+Ey, lookVec[2]+Ez, 0,1,0);
+
    } else {
 	  //  Set view angle
 	  glRotated(ph,1,0,0);
@@ -259,9 +263,8 @@ void display() {
   glEnable(GL_NORMALIZE); //Normalizes all the normal vectors.
   glEnable(GL_LIGHTING);
   glLoadIdentity();
-  moveCamera();
-
   glEnable(GL_LIGHT0);
+  moveCamera();
   getLtPos();
   setLight();
 
@@ -301,41 +304,22 @@ void display() {
   }
 
   glPushMatrix();
-  glRotated(90, 1,0,0);
+  //glRotated(90, 1,0,0);
   drawPlane(1,1,10);
+  glutSolidTeapot(0.7);
   glPopMatrix();
-  glutSolidTeapot(1);
 
   glUseProgram(0);
   glDisable(GL_LIGHTING);
-  glPushMatrix();
-  //drawSeaUrchin();
-  //glutSolidTeapot(0.5);
-  glTranslated(0, -0.51, 0);
-  drawStairs(10, 0.5, 1., 1.);
-  glPopMatrix();
-
-  //glDisable(GL_LIGHTING);
-  //glDisable(GL_LIGHT0);
-
-  /*double rad = 1.6;
-  double i;
-  for(i = 0; i < (2*PI); i+=(PI/4)) {
-    glPushMatrix();
-    glTranslated(rad*cos(i),rad*sin(i),0);
-    double scalar = fabs(0.05*Sin(cubeRotate+(180*i/PI)))+0.1;
-    glScaled(scalar, scalar, scalar);
-    glRotated(cubeRotate, cos(i), sin(i), 0);
-    drawCube();
-    glPopMatrix();
-  }
-  Print("Property: %d Values: %f, %f, %f, %f", ltParam, emission, ambient, diffuse, specular);*/
   glFlush();
   glutSwapBuffers(); //this is for double buffered window. Single buffered uses glFlush.
 }
 
 /*
  *  GLUT calls this routine when the window is resized
+ */
+ /*TODO: Rho, phi, and theta are being calculated incorrectly when we switch from cartesian to spherical coordinates.
+        There might be a bug in the conversion functions, or rho, phi, and theta might not be getting updated with every press of a movement key.
  */
 void idle()
 {
@@ -351,41 +335,50 @@ void idle()
      if(ltMove) ltAng = fmod(ltAng+2, 360.0);
 
      if(up) {
+       printf("Before sphToCart: Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+       //sphericalToCartesian(rh, ph, th, &Ex, &Ey, &Ez);
        printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
-       double step[3];
-       double focLen = sqrt((lookVec[0])*(lookVec[0])+(lookVec[1])*(lookVec[1])+(lookVec[2])*(lookVec[2]));
-       printf("focLen = %f\n", focLen);
-       Ex += 0.2*lookVec[0]/focLen;
-       Ey += 0.2*lookVec[1]/focLen;
-       Ez += 0.2*lookVec[2]/focLen;
+       printf("LookVec: (%f,%f,%f)\n", lookVec[0], lookVec[1], lookVec[2]);
+       //normalize(&lookVec[0], &lookVec[1], &lookVec[2]);
+       Ex += 0.2*lookVec[0];
+       Ey += 0.2*lookVec[1];
+       Ez += 0.2*lookVec[2];
        cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-       printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
+       printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
      }
      if(down) {
+       //sphericalToCartesian(rh, ph, th, &Ex, &Ey, &Ez);
        printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
-       double focLen = sqrt((lookVec[0])*(lookVec[0])+(lookVec[1])*(lookVec[1])+(lookVec[2])*(lookVec[2]));
-       printf("focLen is %f\n", focLen);
-       Ex -= 0.2*lookVec[0]/focLen;
-       Ey -= 0.2*lookVec[1]/focLen;
-       Ez -= 0.2*lookVec[2]/focLen;
+       printf("LookVec: (%f,%f,%f)\n", lookVec[0], lookVec[1], lookVec[2]);
+       //normalize(&lookVec[0], &lookVec[1], &lookVec[2]);
+       Ex -= 0.2*lookVec[0];
+       Ey -= 0.2*lookVec[1];
+       Ez -= 0.2*lookVec[2];
        cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-       printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
+       printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
      }
      if(left) {
+       printf("Before sphToCart: Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+       //sphericalToCartesian(rh, ph, th, &Ex, &Ey, &Ez);
        printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+       printf("RightVec: (%f,%f,%f)\n", rightVec[0], rightVec[1], rightVec[2]);
+       //normalize(&rightVec[0], &rightVec[1], &rightVec[2]);
        Ex -= 0.2*rightVec[0]; //rightVec is a unit vector
        Ey -= 0.2*rightVec[1];
        Ez -= 0.2*rightVec[2];
        cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-       printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
+       printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
      }
      if(right) {
+       //sphericalToCartesian(rh, ph, th, &Ex, &Ey, &Ez);
        printf("Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
+       printf("RightVec: (%f,%f,%f)\n", rightVec[0], rightVec[1], rightVec[2]);
+       //normalize(&rightVec[0], &rightVec[1], &rightVec[2]);
        Ex += 0.2*rightVec[0];
        Ey += 0.2*rightVec[1];
        Ez += 0.2*rightVec[2];
        cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-       printf("After step: Ex, Ey, Ez => (%f,%f,%f) and focal pt (%f,%f,%f)\n", Ex, Ey, Ez, lookVec[0], lookVec[1], lookVec[2]);
+       printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
      }
 
      //  Tell GLUT it is necessary to redisplay the scene
@@ -413,8 +406,8 @@ int main(int argc,char* argv[])
    glutKeyboardFunc(key);
    glutKeyboardUpFunc(key_up);
    glutIdleFunc(idle);
-   glutMotionFunc(mouse_motion);
-   glutMouseFunc(on_click);
+   //glutMotionFunc(mouse_motion);
+   //glutMouseFunc(on_click);
    //obj = LoadOBJ("elf_obj.obj");
 
    glewInit();
@@ -427,7 +420,7 @@ int main(int argc,char* argv[])
     //Textures
     checker = LoadTexBMP("textures/water_tex_1.bmp");
     glActiveTexture(GL_TEXTURE1);
-    waterNormals = LoadTexBMP("textures/normal_4.bmp");
+    waterNormals = LoadTexBMP("textures/water_normals.bmp");
     glActiveTexture(GL_TEXTURE0);
 
     //Shaders

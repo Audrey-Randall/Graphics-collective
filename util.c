@@ -84,6 +84,13 @@ void cross(double v1[3], double v2[3], double res[3]) {
 	res[2] = v1[0]*v2[1] - v2[0]*v1[1];
 }
 
+void normalize(double* x, double* y, double* z) {
+	double len=sqrt((*x)*(*x)+(*y)*(*y)+(*z)*(*z));
+	*x = *x/len;
+	*y = *y/len;
+	*z = *z/len;
+}
+
 void drawCone(double h, double r) {
   glBegin(GL_TRIANGLES);
   int i;
