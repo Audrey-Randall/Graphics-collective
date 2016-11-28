@@ -9,17 +9,24 @@ uniform sampler2D tex;
 uniform sampler2D normal_tex;
 uniform int frame;
 varying vec2 texCoords;
-varying vec3 depth;
+varying vec3 pos;
 
 void main()
 {
     vec3 n,halfV,lightDir, viewDir;
     float NdotL,NdotHV;
-    vec4 fogColor = vec4(1,0,0,1);//vec4(0, 0.0862, 0.0549, 1.);
+    //vec4 fogColor = vec4(1,0,0,1);
+    //vec4 fogColor = vec4(0, 0.0862, 0.0549, 1.);
+    vec4 fogColor = vec4(0,0,0,1);
 
     //lightDir = vec3(gl_LightSource[0].position);
     lightDir = vec3(gl_LightSource[0].position.xyz - viewVector);
     viewDir = normalize(-viewVector);
+
+    float t = -1.0*pos.y/viewVector.y;
+    vec3 intersect = vec3(pos.x+t*viewVector.x, pos.y + t*viewVector.y, pos.z + t*viewVector.z);
+    vec3 distVec = intersect - pos;
+    float depth = sqrt((distVec.x*distVec.x)+(distVec.y*distVec.y)+(distVec.z*distVec.z));
 
     /* The ambient term will always be present */
     vec4 color = ambient;
@@ -52,14 +59,16 @@ void main()
     //The range of light intensities is super high, need to up the ambient and decrease what?
     vec4 texture = texture2D(tex, texCoords).xyzw;
     texture.w = 0.1;
-    if(depth.y < 0) {
-      float distBelow = -1*depth.y;
-      float dEnd = 1.5; //depth at which fog is complete in world coordinates
+    vec4 allColor = color * texture;
+    //if(pos.y < 0) {
+      //float distBelow = -1.0*depth;
+      float dEnd = 1.; //depth at which fog is complete in world coordinates
       float dStart = 0.0; //depth at which fog begins, at the water's surface
-      float f = (dEnd - distBelow)/(dEnd - dStart);
-      texture = f*texture + (1-f)*fogColor;
-      gl_FragColor = fogColor;
-    }
-    gl_FragColor = color*texture;
+      float f = (dEnd + pos.y)/(dEnd - dStart);
+      allColor = f*1.5*allColor + (1-f*1.5)*fogColor;
+      //gl_FragColor = vec4(pos.x, pos.y, pos.z, 1);
+    //} //else {
+      gl_FragColor = allColor;
+    //}
     //gl_FragColor = color;
 }
