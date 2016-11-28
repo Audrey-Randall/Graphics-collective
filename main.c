@@ -303,9 +303,19 @@ void display() {
     glProgramUniform1i(shader1, frameLoc, frameInSec);
   }
 
+  /*float density = 0.3;
+  float fogColor[4] = {0.5, 0.5, 0.5, 1.0};
+  glFogfv(GL_FOG_DENSITY, density);
+  glFogfv(GL_FOG_COLOR, fogColor);
+  glFogfv()*/
+
   glPushMatrix();
-  //glRotated(90, 1,0,0);
+  glRotated(90, 1,0,0);
   drawPlane(1,1,10);
+  glPopMatrix();
+
+  glPushMatrix();
+  //glTranslated(0,-1,0);
   glutSolidTeapot(0.7);
   glPopMatrix();
 
