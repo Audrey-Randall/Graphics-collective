@@ -281,14 +281,6 @@ void display() {
     glPopMatrix();
   }
 
-  glUseProgram(shader_ws);
-  setUniforms(shader_ws, frameInSec);
-
-  glPushMatrix();
-  glRotated(90, 1,0,0);
-  drawPlane(1,1,10);
-  glPopMatrix();
-
   glUseProgram(shader_uw);
   setUniforms(shader_uw, frameInSec);
 
@@ -307,8 +299,22 @@ void display() {
   glutSolidTeapot(0.7);
   glPopMatrix();
 
+//Draw water last since it has to be partially transparent
+  glUseProgram(shader_ws);
+  setUniforms(shader_ws, frameInSec);
+  glEnable(GL_BLEND);
+  glEnable(GL_DEPTH_TEST);
+  glBlendEquation( GL_FUNC_ADD );
+  glBlendFunc(GL_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  glPushMatrix();
+  glRotated(90, 1,0,0);
+  drawPlane(1,1,10);
+  glPopMatrix();
+
   glUseProgram(0);
   glDisable(GL_LIGHTING);
+  glDisable(GL_BLEND);
   glFlush();
   glutSwapBuffers(); //this is for double buffered window. Single buffered uses glFlush.
 }
