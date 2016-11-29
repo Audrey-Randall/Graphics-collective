@@ -20,7 +20,14 @@
 #include <GL/glut.h>
 #endif
 
-int shader1;
+int shader_uw;
+int shader_ws;
+//underwater object textures
+unsigned int tex_uw;
+unsigned int norm_uw;
+//water surface textures
+unsigned int tex_ws;
+unsigned int norm_ws;
 
 //from Prof. Schreuder's example 19
 void ErrCheck(const char* where);
@@ -34,5 +41,6 @@ void PrintShaderLog(int obj,char* file);
 int CreateShader(GLenum type,char* file);
 int CreateShaderProg(char* VertFile, char* FragFile);
 void drawPlane(float width, float height, int split);
+void setUniforms(int shader, int frameInSec);
 
 #endif

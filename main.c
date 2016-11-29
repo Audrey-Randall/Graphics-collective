@@ -281,36 +281,16 @@ void display() {
     glPopMatrix();
   }
 
-  //Use shader?
-  glUseProgram(shader1);
-  int texUnitLoc = glGetUniformLocation(shader1, "tex");
-  if(texUnitLoc < 0) {
-    printf("Failure in shader crap: uniform tex\n");
-  } else {
-    //set the uniform in shader1 called tex to texture 0
-    glProgramUniform1i(shader1, texUnitLoc, 0);
-  }
-  int normalLoc = glGetUniformLocation(shader1, "normal_tex");
-  if(normalLoc < 0) {
-    printf("Failure in shader crap: uniform normal_tex\n");
-  } else {
-    glProgramUniform1i(shader1, normalLoc, 1);
-  }
-  int frameLoc = glGetUniformLocation(shader1, "frame");
-  if(frameLoc < 0) {
-    //printf("Failure in shader crap: uniform frame. Main's frame = %f\n", frameInSec);
-  } else {
-    glProgramUniform1i(shader1, frameLoc, frameInSec);
-  }
+  glUseProgram(shader_ws);
+  setUniforms(shader_ws, frameInSec);
 
   glPushMatrix();
   glRotated(90, 1,0,0);
   drawPlane(1,1,10);
   glPopMatrix();
 
-  /*glPushMatrix();
-  drawStairs(5., 1., 1., 2.);
-  glPopMatrix();*/
+  glUseProgram(shader_uw);
+  setUniforms(shader_uw, frameInSec);
 
   glPushMatrix();
   //glTranslated(0,1,0);
@@ -436,13 +416,19 @@ int main(int argc,char* argv[])
    		exit(1);
    	}
     //Textures
-    checker = LoadTexBMP("textures/water_tex_1.bmp");
+    glActiveTexture(GL_TEXTURE0);
+    tex_ws = LoadTexBMP("textures/water_tex_1.bmp");
     glActiveTexture(GL_TEXTURE1);
-    waterNormals = LoadTexBMP("textures/water_normals.bmp");
+    norm_ws = LoadTexBMP("textures/water_normals.bmp");
+    glActiveTexture(GL_TEXTURE2);
+    tex_uw = LoadTexBMP("textures/texture_4.bmp");
+    glActiveTexture(GL_TEXTURE3);
+    norm_uw = LoadTexBMP("textures/normal_4.bmp");
     glActiveTexture(GL_TEXTURE0);
 
     //Shaders
-    shader1 = CreateShaderProg("pix_light.vert","pix_light.frag");
+    shader_uw = CreateShaderProg("underwater.vert","underwater.frag"); //uw = underwater
+    shader_ws  = CreateShaderProg("water_surf.vert", "water_surf.frag"); //ws = water surface
 
    //  Pass control to GLUT so it can interact with the user
    glutMainLoop();
