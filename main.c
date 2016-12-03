@@ -299,6 +299,12 @@ void display() {
   glutSolidTeapot(0.7);
   glPopMatrix();
 
+  glUseProgram(shader_debug);
+  glPushMatrix();
+  //n, h, w, l
+  drawStairs(10,0.5,1, 2);
+  glPopMatrix();
+
 //Draw water last since it has to be partially transparent
   glUseProgram(shader_ws);
   setUniforms(shader_ws, frameInSec);

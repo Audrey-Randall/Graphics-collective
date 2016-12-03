@@ -21,6 +21,7 @@
 #include <GL/glut.h>
 #endif
 
+typedef struct {float x,y,z;} Point;
 
 //#include "textfile.h"
 //Shader thingies
@@ -76,6 +77,8 @@ double fov; //field of view
 int isPersp; //perspective or orthogonal projection
 int spineAnglesSet;
 int drawLight;
+Point Lp;        // Light position in local coordinate system from ex 35
+Point Nc, Ec;     // Far or near clipping plane in local coordinate system from ex 35
 
 double frame;
 int frameInSec;
@@ -100,6 +103,11 @@ void getLtPos();
 void drawSphere();
 void drawStairs(int n, float h, float w, float l);
 void setLight();
+void Crout(double M[16],int I[4]);
+void Transform(float x0,float y0,float z0,
+               float Sx,float Sy,float Sz,
+               float th,float ph);
+Point Backsolve(double M[16],int I[4],double Bx,double By,double Bz,double Bw);
 void init();
 
 #endif
