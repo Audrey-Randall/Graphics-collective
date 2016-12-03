@@ -302,19 +302,21 @@ void display() {
 //Draw water last since it has to be partially transparent
   glUseProgram(shader_ws);
   setUniforms(shader_ws, frameInSec);
+  //glUseProgram(shader_debug);
   glEnable(GL_BLEND);
-  glEnable(GL_DEPTH_TEST);
-  glBlendEquation( GL_FUNC_ADD );
-  glBlendFunc(GL_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  //glEnable(GL_DEPTH_TEST);
+  //glBlendEquation( GL_FUNC_ADD );
+  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-  glPushMatrix();
+  /*glPushMatrix();
   glRotated(90, 1,0,0);
-  drawPlane(1,1,10);
-  glPopMatrix();
+  //drawPlane(1,1,10);
+  glPopMatrix();*/
+  drawWater();
 
+  glDisable(GL_BLEND);
   glUseProgram(0);
   glDisable(GL_LIGHTING);
-  glDisable(GL_BLEND);
   glFlush();
   glutSwapBuffers(); //this is for double buffered window. Single buffered uses glFlush.
 }
@@ -435,6 +437,7 @@ int main(int argc,char* argv[])
     //Shaders
     shader_uw = CreateShaderProg("underwater.vert","underwater.frag"); //uw = underwater
     shader_ws  = CreateShaderProg("water_surf.vert", "water_surf.frag"); //ws = water surface
+    shader_debug = CreateShaderProg("debug.vert", "debug.frag");
 
    //  Pass control to GLUT so it can interact with the user
    glutMainLoop();

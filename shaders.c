@@ -241,7 +241,7 @@ void drawPlane(float width, float height, int split) {
   glNormal3f(0,0,1);
   for(i = -1; i < 1-inc; i+=inc) {
     for(j = -1; j < 1-inc; j+=inc) {
-      /*if(i == -1) {
+      /*if(i <= 1-inc*2) {
         printf("\n\n (i,j) = (%f,%f)\n", i, j);
         printf("\tTexCoord 1: (%f,%f)\n", (i+1)/2, (j+1)/2);
         printf("\tTexCoord 2: (%f,%f)\n", (i+1)/2, (j+inc+1)/2);
@@ -277,6 +277,21 @@ void drawPlane(float width, float height, int split) {
   }
   glEnd();
   glEnable(GL_LIGHTING);*/
+}
+
+void drawWater(){
+  glColor4f(0.5,0,0, 0.2);
+  int i;
+  int j;
+  for(i = -5; i < 5; i++) {
+    for(j = -5; j < 5; j++) {
+      glPushMatrix();
+      glRotated(90, 1,0,0);
+      glTranslated(i*2, j*2, 0);
+      drawPlane(1,1,10);
+      glPopMatrix();
+    }
+  }
 }
 
 void setUniforms(int shader, int frameInSec) {

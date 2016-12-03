@@ -22,6 +22,7 @@
 
 int shader_uw;
 int shader_ws;
+int shader_debug;
 //underwater object textures
 unsigned int tex_uw;
 unsigned int norm_uw;
