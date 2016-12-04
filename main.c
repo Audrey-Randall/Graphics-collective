@@ -232,14 +232,16 @@ void special(int key,int x,int y)
 /*
  *  GLUT calls this routine when the window is resized
  */
-void reshape(int width,int height)
+void reshape(int w,int h)
 {
    //  Ratio of the width to the height of the window
-   w2h = (height>0) ? (double)width/height : 1;
+   w2h = (h>0) ? (double)w/h : 1;
    //  Set the viewport to the entire window
-   glViewport(0,0, width,height);
+   glViewport(0,0, w,h);
    //  Tell OpenGL we want to manipulate the projection matrix
    Project(0, w2h, dim);
+   width = w;
+   height = h;
 }
 
 void moveCamera() {
@@ -300,9 +302,23 @@ void display() {
   glPopMatrix();
 
   glUseProgram(shader_debug);
+  //Render stairs to frame buffer using simple shader
+  if(renderToFrameBuf() < 0) Fatal("frame buffer error\n");
+  glBindFramebuffer(GL_FRAMEBUFFER, fbuf);
+  glViewport(0,0,width, height); // Render on the whole framebuffer, complete from the lower left corner to the upper right
   glPushMatrix();
   //n, h, w, l
+  glTranslated(0, -1, 0);
   drawStairs(10,0.5,1, 2);
+  glPopMatrix();
+  glBindFramebuffer(GL_FRAMEBUFFER, 0); //Should unbind frame buffer
+  glViewport(0,0,width, height);
+
+  //Render texture in frame buffer to quad the size of the screen, using the shader that causes distortion
+  glUseProgram(shader_distort)
+  glPushMatrix();
+  //the size of the screen?
+  drawPlane(2,2,10);
   glPopMatrix();
 
 //Draw water last since it has to be partially transparent
@@ -410,7 +426,7 @@ int main(int argc,char* argv[])
    //  Request 500 x 500 pixel window
    glutInitWindowSize(500,500);
    //  Create the window
-   glutCreateWindow("Shader Tests (Audrey Randall)");
+   glutCreateWindow("Water Shaders (Audrey Randall)");
 
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
@@ -438,11 +454,14 @@ int main(int argc,char* argv[])
     tex_uw = LoadTexBMP("textures/texture_4.bmp");
     glActiveTexture(GL_TEXTURE3);
     norm_uw = LoadTexBMP("textures/normal_4.bmp");
+    sky[0] = LoadTexBMP("textures/sky0.bmp");
+    sky[1] = LoadTexBMP("textures/sky1.bmp");
     glActiveTexture(GL_TEXTURE0);
 
     //Shaders
     shader_uw = CreateShaderProg("underwater.vert","underwater.frag"); //uw = underwater
     shader_ws  = CreateShaderProg("water_surf.vert", "water_surf.frag"); //ws = water surface
+    shader_distort = CreateShaderProg("distort.vert", "distort.frag"); //for stairs with no tex coords yet
     shader_debug = CreateShaderProg("debug.vert", "debug.frag");
 
    //  Pass control to GLUT so it can interact with the user

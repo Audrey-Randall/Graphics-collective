@@ -336,5 +336,18 @@ void setUniforms(int shader, int frameInSec) {
       } else {
         glProgramUniform1i(shader_ws, frameLoc, frameInSec);
       }
+    } else if (shader == shader_distort) {
+      int texUnitLoc = glGetUniformLocation(shader_distort, "fb_tex");
+      if(texUnitLoc < 0) {
+        printf("Failure in shader %d: uniform fb_tex\n", shader_distort);
+      } else {
+        glProgramUniform1i(shader_distort, texUnitLoc, fbufTex);
+      }
+      int timeLoc = glGetUniformLocation(shader_distort, "time");
+      if(timeLoc < 0) {
+        printf("Failure in shader %d: uniform time\n", shader_distort);
+      } else {
+        glProgramUniform1i(shader_distort, timeLoc, frameInSec);
+      }
     }
 }

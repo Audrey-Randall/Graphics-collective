@@ -30,6 +30,13 @@ typedef struct {float x,y,z;} Point;
 //Textures
 unsigned int checker;
 unsigned int waterNormals;
+unsigned int sky[2];
+
+//frame buffer
+unsigned int fbuf;
+unsigned int depthRenderBuffer;
+GLenum DrawBuffers[1];
+unsigned int fbufTex;
 
 //WASD
 int left;
@@ -60,6 +67,8 @@ double matEmit;
 double shinyness;
 
 double w2h;
+int width;
+int height;
 double cubeRotate;
 int th;       // Azimuth of view angle
 int ph;       // Elevation of view angle
@@ -102,6 +111,7 @@ void drawSeaUrchin();
 void getLtPos();
 void drawSphere();
 void drawStairs(int n, float h, float w, float l);
+static void Sky(double D);
 void setLight();
 void Crout(double M[16],int I[4]);
 void Transform(float x0,float y0,float z0,

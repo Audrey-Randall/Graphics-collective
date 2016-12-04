@@ -5,6 +5,8 @@
 char* text[] = {"","2D","3D constant Z","3D","4D"};  // Dimension display text
 
 void init() {
+	width = 500;
+	height = 500;
 	frame = 0.0;
 	frameInSec = 0;
 	cubeRotate = 0;
@@ -309,7 +311,7 @@ drawStep(){
     glVertex3d(1.0f, 1.0f,-1.0f);
 
     glNormal3f(0,1,0);
-    glColor3f(0.613,0.5277,0.3611); //green
+    glColor3f(0.613,0.5277,0.3611);
     glVertex3d(1.0f, 1.0f, 1.0f);
     glVertex3d(-1.0f, 1.0f,-1.0f);
     glVertex3d(-1.0f, 1.0f, 1.0f);
@@ -326,11 +328,92 @@ void drawStairs(int n, float h, float w, float l) {
 	int i;
 	for(i = 1; i < n; i++) {
 		glPushMatrix();
-		glTranslated((h/n*i)*4, h/n*i, 0);
-		glScaled(1./n,h/n*i, w);
+		glTranslated((h/n*i)*4*l, h/n*i, 0);
+		glScaled(l/n,h/n*i, w);
 		drawStep();
 		glPopMatrix();
 	}
+}
+
+/*
+ *  Draw sky box
+ */
+static void Sky(double D)
+{
+   glColor3f(1,1,1);
+   glEnable(GL_TEXTURE_2D);
+
+   //  Sides
+   glBindTexture(GL_TEXTURE_2D,sky[0]);
+   glBegin(GL_QUADS);
+   glTexCoord2f(0.00,0); glVertex3f(-D,-D,-D);
+   glTexCoord2f(0.25,0); glVertex3f(+D,-D,-D);
+   glTexCoord2f(0.25,1); glVertex3f(+D,+D,-D);
+   glTexCoord2f(0.00,1); glVertex3f(-D,+D,-D);
+
+   glTexCoord2f(0.25,0); glVertex3f(+D,-D,-D);
+   glTexCoord2f(0.50,0); glVertex3f(+D,-D,+D);
+   glTexCoord2f(0.50,1); glVertex3f(+D,+D,+D);
+   glTexCoord2f(0.25,1); glVertex3f(+D,+D,-D);
+
+   glTexCoord2f(0.50,0); glVertex3f(+D,-D,+D);
+   glTexCoord2f(0.75,0); glVertex3f(-D,-D,+D);
+   glTexCoord2f(0.75,1); glVertex3f(-D,+D,+D);
+   glTexCoord2f(0.50,1); glVertex3f(+D,+D,+D);
+
+   glTexCoord2f(0.75,0); glVertex3f(-D,-D,+D);
+   glTexCoord2f(1.00,0); glVertex3f(-D,-D,-D);
+   glTexCoord2f(1.00,1); glVertex3f(-D,+D,-D);
+   glTexCoord2f(0.75,1); glVertex3f(-D,+D,+D);
+   glEnd();
+
+   //  Top and bottom
+   glBindTexture(GL_TEXTURE_2D,sky[1]);
+   glBegin(GL_QUADS);
+   glTexCoord2f(0.0,0); glVertex3f(+D,+D,-D);
+   glTexCoord2f(0.5,0); glVertex3f(+D,+D,+D);
+   glTexCoord2f(0.5,1); glVertex3f(-D,+D,+D);
+   glTexCoord2f(0.0,1); glVertex3f(-D,+D,-D);
+
+   glTexCoord2f(1.0,1); glVertex3f(-D,-D,+D);
+   glTexCoord2f(0.5,1); glVertex3f(+D,-D,+D);
+   glTexCoord2f(0.5,0); glVertex3f(+D,-D,-D);
+   glTexCoord2f(1.0,0); glVertex3f(-D,-D,-D);
+   glEnd();
+
+   glDisable(GL_TEXTURE_2D);
+}
+
+//Credit to http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-14-render-to-texture/
+int renderToFrameBuf(){
+	glGenFramebuffers(1, &fbuf);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbuf);
+
+	glGenTextures(1, &fbufTex);
+	glBindTexture(GL_TEXTURE_2D, fbufTex);
+	// Give an empty image to OpenGL ( the last "0" )
+	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+
+	// Poor filtering. Needed !
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	// The depth buffer
+	glGenRenderbuffers(1, &depthRenderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+
+	// Set "renderedTexture" as our colour attachement #0
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fbufTex, 0);
+
+	// Set the list of draw buffers.
+	DrawBuffers[0] = GL_COLOR_ATTACHMENT0;
+	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+	// Always check that our framebuffer is ok
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) return -1;
+	else return 0;
 }
 
 void setLight(){

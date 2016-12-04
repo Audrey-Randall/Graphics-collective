@@ -1,3 +1,4 @@
+
 void main()
 {
   vec4 color = gl_Color;
