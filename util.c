@@ -384,38 +384,6 @@ static void Sky(double D)
    glDisable(GL_TEXTURE_2D);
 }
 
-//Credit to http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-14-render-to-texture/
-int renderToFrameBuf(){
-	glGenFramebuffers(1, &fbuf);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbuf);
-
-	glGenTextures(1, &fbufTex);
-	glBindTexture(GL_TEXTURE_2D, fbufTex);
-	// Give an empty image to OpenGL ( the last "0" )
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
-
-	// Poor filtering. Needed !
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	// The depth buffer
-	glGenRenderbuffers(1, &depthRenderBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
-
-	// Set "renderedTexture" as our colour attachement #0
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fbufTex, 0);
-
-	// Set the list of draw buffers.
-	DrawBuffers[0] = GL_COLOR_ATTACHMENT0;
-	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
-
-	// Always check that our framebuffer is ok
-	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) return -1;
-	else return 0;
-}
-
 void setLight(){
 	//printf("Light is at (%f, %f, %f)\n", 2*Cos(ltAng), ltY, 2*Sin(ltAng));
 	//Lighting variables, taken from example 26

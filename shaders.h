@@ -23,12 +23,22 @@
 int shader_uw;
 int shader_ws;
 int shader_debug;
+int shader_distort;
 //underwater object textures
 unsigned int tex_uw;
 unsigned int norm_uw;
 //water surface textures
 unsigned int tex_ws;
 unsigned int norm_ws;
+
+//frame buffer
+GLuint fbuf;
+GLuint depthRenderBuffer;
+GLenum DrawBuffers[1];
+GLuint fbufTex;
+
+int width;
+int height;
 
 //from Prof. Schreuder's example 19
 void ErrCheck(const char* where);
@@ -43,5 +53,6 @@ int CreateShader(GLenum type,char* file);
 int CreateShaderProg(char* VertFile, char* FragFile);
 void drawPlane(float width, float height, int split);
 void setUniforms(int shader, int frameInSec);
+int renderToFrameBuf();
 
 #endif

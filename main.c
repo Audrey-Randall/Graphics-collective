@@ -271,6 +271,8 @@ void display() {
   setLight();
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0); //Should unbind frame buffer
+  glViewport(0,0,width, height);
 
   glShadeModel(GL_SMOOTH);
 
@@ -301,27 +303,32 @@ void display() {
   glutSolidTeapot(0.7);
   glPopMatrix();
 
+  //Render stairs to frame buffer using simple shader. Once the stairs have lighting, switch this to shader_uw
   glUseProgram(shader_debug);
-  //Render stairs to frame buffer using simple shader
-  if(renderToFrameBuf() < 0) Fatal("frame buffer error\n");
   glBindFramebuffer(GL_FRAMEBUFFER, fbuf);
+  glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,width, height); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+
   glPushMatrix();
-  //n, h, w, l
   glTranslated(0, -1, 0);
-  drawStairs(10,0.5,1, 2);
+  drawStairs(10,0.5,1, 2);   //n, h, w, l
   glPopMatrix();
+
   glBindFramebuffer(GL_FRAMEBUFFER, 0); //Should unbind frame buffer
   glViewport(0,0,width, height);
 
   //Render texture in frame buffer to quad the size of the screen, using the shader that causes distortion
-  glUseProgram(shader_distort)
+  glUseProgram(shader_distort);
+  //glClear(GL_COLOR_BUFFER_BIT);
+  setUniforms(shader_uw, frameInSec);
   glPushMatrix();
   //the size of the screen?
   drawPlane(2,2,10);
   glPopMatrix();
 
 //Draw water last since it has to be partially transparent
+  //glBindTexture(GL_TEXTURE_2D, tex_ws);
+  //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glUseProgram(shader_ws);
   setUniforms(shader_ws, frameInSec);
   //glUseProgram(shader_debug);
@@ -337,6 +344,7 @@ void display() {
   drawWater();
 
   glDisable(GL_BLEND);
+  //TODO: need to destroy frame buffer
   glUseProgram(0);
   glDisable(GL_LIGHTING);
   glFlush();
@@ -446,17 +454,20 @@ int main(int argc,char* argv[])
    		exit(1);
    	}
     //Textures
-    glActiveTexture(GL_TEXTURE0);
-    tex_ws = LoadTexBMP("textures/water_tex_1.bmp");
     glActiveTexture(GL_TEXTURE1);
-    norm_ws = LoadTexBMP("textures/water_normals.bmp");
+    tex_ws = LoadTexBMP("textures/water_tex_1.bmp");
     glActiveTexture(GL_TEXTURE2);
-    tex_uw = LoadTexBMP("textures/texture_4.bmp");
+    norm_ws = LoadTexBMP("textures/water_normals.bmp");
     glActiveTexture(GL_TEXTURE3);
+    tex_uw = LoadTexBMP("textures/texture_4.bmp");
+    glActiveTexture(GL_TEXTURE4);
     norm_uw = LoadTexBMP("textures/normal_4.bmp");
+    glActiveTexture(GL_TEXTURE5);
     sky[0] = LoadTexBMP("textures/sky0.bmp");
+    glActiveTexture(GL_TEXTURE6);
     sky[1] = LoadTexBMP("textures/sky1.bmp");
     glActiveTexture(GL_TEXTURE0);
+    printf("Texture numbers: %d, %d, %d, %d, %d, %d\n", tex_ws, norm_ws, tex_uw, norm_uw, sky[0], sky[1]);
 
     //Shaders
     shader_uw = CreateShaderProg("underwater.vert","underwater.frag"); //uw = underwater
@@ -464,6 +475,7 @@ int main(int argc,char* argv[])
     shader_distort = CreateShaderProg("distort.vert", "distort.frag"); //for stairs with no tex coords yet
     shader_debug = CreateShaderProg("debug.vert", "debug.frag");
 
+    if(renderToFrameBuf() < 0) Fatal("frame buffer error\n");
    //  Pass control to GLUT so it can interact with the user
    glutMainLoop();
    //  Return code

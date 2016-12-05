@@ -32,12 +32,6 @@ unsigned int checker;
 unsigned int waterNormals;
 unsigned int sky[2];
 
-//frame buffer
-unsigned int fbuf;
-unsigned int depthRenderBuffer;
-GLenum DrawBuffers[1];
-unsigned int fbufTex;
-
 //WASD
 int left;
 int right;
@@ -67,8 +61,6 @@ double matEmit;
 double shinyness;
 
 double w2h;
-int width;
-int height;
 double cubeRotate;
 int th;       // Azimuth of view angle
 int ph;       // Elevation of view angle

@@ -32,11 +32,6 @@ void main()
     vec4 color = ambient;
     color.a = 0.1;
 
-    /* a fragment shader can't write a varying variable, hence we need
-    a new variable to store the normalized interpolated normal */
-    //n = normalize(normal);
-    vec2 horizCoords = vec2(texCoords.x, texCoords.y + (1./180. * frame));
-    vec2 vertCoords = vec2(texCoords.x + (1./180.*frame), texCoords.y);
     n = normalize(texture2D(normal_tex, texCoords).xyz*normal);
     //n = normalize(((texture2D(normal_tex, horizCoords).xyz + texture2D(normal_tex, vertCoords).xyz)/2)*normal);
 

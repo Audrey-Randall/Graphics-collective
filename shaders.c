@@ -37,7 +37,7 @@ void Fatal(const char* format , ...)
     //  Snarf the file
     int read;
     if ((read = fread(buffer,1,n,f)) < 0) {
-      printf("buffer is: \n");
+      //printf("buffer is: \n");
       perror("Error was");
       Fatal("Cannot read %d bytes for text file %s\n",n,file);
     }
@@ -46,7 +46,7 @@ void Fatal(const char* format , ...)
       char* newBuf = (char*)malloc(read+1);
       for(i = 0; i < read; i++) {
         newBuf[i] = buffer[i];
-        printf("%c", newBuf[i]);
+        //printf("%c", newBuf[i]);
       }
       newBuf[read] = 0;
       return newBuf;
@@ -294,20 +294,54 @@ void drawWater(){
   }
 }
 
+//Credit to http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-14-render-to-texture/
+int renderToFrameBuf(){
+  fbuf = 0;
+	glGenFramebuffers(1, &fbuf);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbuf);
+
+	glGenTextures(1, &fbufTex);
+	glBindTexture(GL_TEXTURE_2D, fbufTex);
+	// Give an empty image to OpenGL ( the last "0" )
+	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+
+	// Poor filtering. Needed !
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	// The depth buffer
+	glGenRenderbuffers(1, &depthRenderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+
+	// Set "renderedTexture" as our colour attachement #0
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fbufTex, 0);
+
+	// Set the list of draw buffers.
+	DrawBuffers[0] = GL_COLOR_ATTACHMENT0;
+	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+	// Always check that our framebuffer is ok
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) return -1;
+	else return 0;
+}
+
+
 void setUniforms(int shader, int frameInSec) {
-  if(shader == shader_uw) {
+    if(shader == shader_uw) {
       int texUnitLoc = glGetUniformLocation(shader_uw, "tex");
       if(texUnitLoc < 0) {
         printf("Failure in shader %d: uniform tex\n", shader_uw);
       } else {
         //set the uniform in shader_uw called tex to texture 0
-        glProgramUniform1i(shader_uw, texUnitLoc, 2);
+        glProgramUniform1i(shader_uw, texUnitLoc, tex_uw);
       }
       int normalLoc = glGetUniformLocation(shader_uw, "normal_tex");
       if(normalLoc < 0) {
         printf("Failure in shader %d: uniform normal_tex\n", shader_uw);
       } else {
-        glProgramUniform1i(shader_uw, normalLoc, 3);
+        glProgramUniform1i(shader_uw, normalLoc, norm_uw);
       }
       int frameLoc = glGetUniformLocation(shader_uw, "frame");
       if(frameLoc < 0) {
@@ -321,14 +355,13 @@ void setUniforms(int shader, int frameInSec) {
       if(texUnitLoc < 0) {
         printf("Failure in shader %d: uniform tex\n", shader_ws);
       } else {
-        //set the uniform in shader_uw called tex to texture 2
-        glProgramUniform1i(shader_ws, texUnitLoc, 0);
+        glProgramUniform1i(shader_ws, texUnitLoc, tex_ws);
       }
       int normalLoc = glGetUniformLocation(shader_ws, "normal_tex");
       if(normalLoc < 0) {
         printf("Failure in shader %d: uniform normal_tex\n", shader_ws);
       } else {
-        glProgramUniform1i(shader_ws, normalLoc, 1);
+        glProgramUniform1i(shader_ws, normalLoc, norm_ws);
       }
       int frameLoc = glGetUniformLocation(shader_ws, "frame");
       if(frameLoc < 0) {
