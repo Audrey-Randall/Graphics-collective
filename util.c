@@ -5,8 +5,6 @@
 char* text[] = {"","2D","3D constant Z","3D","4D"};  // Dimension display text
 
 void init() {
-	width = 500;
-	height = 500;
 	frame = 0.0;
 	frameInSec = 0;
 	cubeRotate = 0;
@@ -338,7 +336,7 @@ void drawStairs(int n, float h, float w, float l) {
 /*
  *  Draw sky box
  */
-static void Sky(double D)
+ void Sky(double D)
 {
    glColor3f(1,1,1);
    glEnable(GL_TEXTURE_2D);

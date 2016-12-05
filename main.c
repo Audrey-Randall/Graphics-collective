@@ -17,7 +17,7 @@ void Project(double fov,double asp,double dim)
 	  //This sets up a perspective matrix, but doesn't actually reproject the scene. It defines the size of the truncated pyramid. Analogy: choose a lens for a camera.
       gluPerspective(fov,asp,dim/16,16*dim);
    else
-      glOrtho(-asp*dim,asp*dim,-dim,+dim,-dim,+dim);
+      glOrtho(-asp*dim,asp*dim,-dim,+dim,-dim*7,+dim*7);
    glMatrixMode(GL_MODELVIEW);
    //why is this necessary?
    glLoadIdentity();
@@ -303,6 +303,8 @@ void display() {
   glutSolidTeapot(0.7);
   glPopMatrix();
 
+  //Sky(200.0);
+
   //Render stairs to frame buffer using simple shader. Once the stairs have lighting, switch this to shader_uw
   glUseProgram(shader_debug);
   glBindFramebuffer(GL_FRAMEBUFFER, fbuf);
@@ -320,7 +322,7 @@ void display() {
   //Render texture in frame buffer to quad the size of the screen, using the shader that causes distortion
   glUseProgram(shader_distort);
   //glClear(GL_COLOR_BUFFER_BIT);
-  setUniforms(shader_uw, frameInSec);
+  setUniforms(shader_distort, frameInSec);
   glPushMatrix();
   //the size of the screen?
   drawPlane(2,2,10);
@@ -432,7 +434,9 @@ int main(int argc,char* argv[])
    glEnable(GL_DEPTH_TEST);
 
    //  Request 500 x 500 pixel window
-   glutInitWindowSize(500,500);
+   width = 500;
+   height = 500;
+   glutInitWindowSize(width, height);
    //  Create the window
    glutCreateWindow("Water Shaders (Audrey Randall)");
 
@@ -454,19 +458,24 @@ int main(int argc,char* argv[])
    		exit(1);
    	}
     //Textures
+    glBindTexture(GL_TEXTURE_2D, tex_ws);
     glActiveTexture(GL_TEXTURE1);
     tex_ws = LoadTexBMP("textures/water_tex_1.bmp");
     glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, norm_ws);
     norm_ws = LoadTexBMP("textures/water_normals.bmp");
     glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, tex_uw);
     tex_uw = LoadTexBMP("textures/texture_4.bmp");
     glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, norm_uw);
     norm_uw = LoadTexBMP("textures/normal_4.bmp");
     glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, sky[0]);
     sky[0] = LoadTexBMP("textures/sky0.bmp");
     glActiveTexture(GL_TEXTURE6);
+    glBindTexture(GL_TEXTURE_2D, sky[1]);
     sky[1] = LoadTexBMP("textures/sky1.bmp");
-    glActiveTexture(GL_TEXTURE0);
     printf("Texture numbers: %d, %d, %d, %d, %d, %d\n", tex_ws, norm_ws, tex_uw, norm_uw, sky[0], sky[1]);
 
     //Shaders

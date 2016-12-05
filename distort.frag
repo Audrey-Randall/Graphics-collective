@@ -4,12 +4,16 @@ varying vec2 texCoords;
 varying vec4 diffuse, ambient;
 varying vec3 normal, halfVector, viewVector;
 
+#define Cos(th) cos(3.1415926/180*(th))
+#define Sin(th) sin(3.1415926/180*(th))
+
 void main()
 {
   vec4 color = gl_Color;
   vec4 fogColor = vec4(0,0,0,1);
+  vec4 origTex = texture2D(fb_tex, texCoords);
 
-  vec2 newCoords = vec2(texCoords.x+sin(time), texCoords.y);
+  vec2 newCoords = vec2(texCoords.x+0.01*sin(texCoords.y*300+0.3*time)*sin(origTex.x), texCoords.y+0.01*sin(texCoords.x*300+0.5*time));
   vec4 texture = texture2D(fb_tex, newCoords).xyzw;
 
   /*float dEnd = 1.; //depth at which fog is complete in world coordinates

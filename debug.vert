@@ -3,6 +3,6 @@ varying vec4 pos;
 void main()
 {
 	gl_FrontColor = gl_Color;
-	pos = gl_Vertex;
+	pos = ftransform();
 	gl_Position = ftransform();
 }

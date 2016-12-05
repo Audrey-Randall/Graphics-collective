@@ -300,7 +300,8 @@ int renderToFrameBuf(){
 	glGenFramebuffers(1, &fbuf);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbuf);
 
-	glGenTextures(1, &fbufTex);
+  glActiveTexture(GL_TEXTURE7);
+  glGenTextures(1, &fbufTex);
 	glBindTexture(GL_TEXTURE_2D, fbufTex);
 	// Give an empty image to OpenGL ( the last "0" )
 	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
