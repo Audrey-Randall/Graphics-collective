@@ -265,56 +265,92 @@ drawStep(){
     glBegin(GL_TRIANGLES);
     glColor3f(0.38,0.355,0.30); //yellow
     glNormal3f(-1,0,0);
+		glTexCoord2f(0,0);
     glVertex3d(-1.0f,-1.0f,-1.0f);
+		glTexCoord2f(0,1);
     glVertex3d(-1.0f,-1.0f, 1.0f);
+		glTexCoord2f(1,1);
     glVertex3d(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0,0);
     glVertex3d(-1.0f,-1.0f,-1.0f);
+		glTexCoord2f(1,1);
     glVertex3d(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(1,0);
     glVertex3d(-1.0f, 1.0f,-1.0f);
 
     glNormal3f(0,0,-1);
-    glColor3f(0.225,0.2,0.15); //red
+    glColor3f(0.225,0.2,0.15);
+		glTexCoord2f(1,1);
     glVertex3d(1.0f, 1.0f,-1.0f);
+		glTexCoord2f(0,0);
     glVertex3d(-1.0f,-1.0f,-1.0f);
+		glTexCoord2f(0,1);
     glVertex3d(-1.0f, 1.0f,-1.0f);
+		glTexCoord2f(1,1);
     glVertex3d(1.0f, 1.0f,-1.0f);
+		glTexCoord2f(1,0);
     glVertex3d(1.0f,-1.0f,-1.0f);
+		glTexCoord2f(0,0);
     glVertex3d(-1.0f,-1.0f,-1.0f);
 
     glNormal3f(0,-1,0);
     glColor3f(0.613,0.5277,0.3611); //green
+		glTexCoord2f(1,1);
     glVertex3d(1.0f,-1.0f, 1.0f);
+		glTexCoord2f(0,0);
     glVertex3d(-1.0f,-1.0f,-1.0f);
+		glTexCoord2f(1,0);
     glVertex3d(1.0f,-1.0f,-1.0f);
+		glTexCoord2f(1,1);
     glVertex3d(1.0f,-1.0f, 1.0f);
+		glTexCoord2f(0,1);
     glVertex3d(-1.0f,-1.0f, 1.0f);
+		glTexCoord2f(0,0);
     glVertex3d(-1.0f,-1.0f,-1.0f);
 
     glNormal3f(0,0,1);
     glColor3f(0.38,0.355,0.30);
+		glTexCoord2f(0,1);
     glVertex3d(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0,0);
     glVertex3d(-1.0f,-1.0f, 1.0f);
+		glTexCoord2f(1,0);
     glVertex3d(1.0f,-1.0f, 1.0f);
+		glTexCoord2f(1,1);
     glVertex3d(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0,1);
     glVertex3d(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(1,0);
     glVertex3d(1.0f,-1.0f, 1.0f);
 
     glNormal3f(1,0,0);
     glColor3f(0.225,0.2,0.15);
+		glTexCoord2f(0,0);
     glVertex3d(1.0f,-1.0f,-1.0f);
+		glTexCoord2f(1,1);
     glVertex3d(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0,1);
     glVertex3d(1.0f,-1.0f, 1.0f);
+		glTexCoord2f(1,1);
     glVertex3d(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0,0);
     glVertex3d(1.0f,-1.0f,-1.0f);
+		glTexCoord2f(1,0);
     glVertex3d(1.0f, 1.0f,-1.0f);
 
     glNormal3f(0,1,0);
     glColor3f(0.613,0.5277,0.3611);
+		glTexCoord2f(1,1);
     glVertex3d(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0,0);
     glVertex3d(-1.0f, 1.0f,-1.0f);
+		glTexCoord2f(0,1);
     glVertex3d(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(1,1);
     glVertex3d(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(1,0);
     glVertex3d(1.0f, 1.0f,-1.0f);
+		glTexCoord2f(0,0);
     glVertex3d(-1.0f, 1.0f,-1.0f);
 
     glEnd();

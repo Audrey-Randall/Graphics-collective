@@ -13,7 +13,7 @@ void main()
   vec4 fogColor = vec4(0,0,0,1);
   vec4 origTex = texture2D(fb_tex, texCoords);
 
-  vec2 newCoords = vec2(texCoords.x+0.01*sin(texCoords.y*300+0.3*time)*sin(origTex.x), texCoords.y+0.01*sin(texCoords.x*300+0.5*time));
+  vec2 newCoords = vec2(texCoords.x+0.002*sin(texCoords.y*300+0.3*time)*sin(origTex.x), texCoords.y+0.002*sin(texCoords.x*300+0.5*time));
   vec4 texture = texture2D(fb_tex, newCoords).xyzw;
 
   /*float dEnd = 1.; //depth at which fog is complete in world coordinates

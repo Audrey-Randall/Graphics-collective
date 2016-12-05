@@ -306,7 +306,7 @@ void display() {
   //Sky(200.0);
 
   //Render stairs to frame buffer using simple shader. Once the stairs have lighting, switch this to shader_uw
-  glUseProgram(shader_debug);
+  glUseProgram(shader_uw);
   glBindFramebuffer(GL_FRAMEBUFFER, fbuf);
   glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,width, height); // Render on the whole framebuffer, complete from the lower left corner to the upper right
