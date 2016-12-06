@@ -259,6 +259,63 @@ void moveCamera() {
   }
 }
 
+/*
+ *  Draw sky box
+ */
+ void Sky(double D)
+{
+	 setUniforms(shader_texture, frameInSec, sky[0]);
+	 glColor3f(1,1,1);
+   glEnable(GL_TEXTURE_2D);
+
+   //  Sides
+   //glBindTexture(GL_TEXTURE_2D,sky[0]);
+   glBegin(GL_QUADS);
+	 glNormal3f(0,0,1);
+   glTexCoord2f(0.00,0); glVertex3f(-D,-D,-D);
+   glTexCoord2f(0.25,0); glVertex3f(+D,-D,-D);
+   glTexCoord2f(0.25,1); glVertex3f(+D,+D,-D);
+   glTexCoord2f(0.00,1); glVertex3f(-D,+D,-D);
+
+	 glNormal3f(-1,0,0);
+   glTexCoord2f(0.25,0); glVertex3f(+D,-D,-D);
+   glTexCoord2f(0.50,0); glVertex3f(+D,-D,+D);
+   glTexCoord2f(0.50,1); glVertex3f(+D,+D,+D);
+   glTexCoord2f(0.25,1); glVertex3f(+D,+D,-D);
+
+	 glNormal3f(0,0,-1);
+   glTexCoord2f(0.50,0); glVertex3f(+D,-D,+D);
+   glTexCoord2f(0.75,0); glVertex3f(-D,-D,+D);
+   glTexCoord2f(0.75,1); glVertex3f(-D,+D,+D);
+   glTexCoord2f(0.50,1); glVertex3f(+D,+D,+D);
+
+	 glNormal3f(1,0,0);
+   glTexCoord2f(0.75,0); glVertex3f(-D,-D,+D);
+   glTexCoord2f(1.00,0); glVertex3f(-D,-D,-D);
+   glTexCoord2f(1.00,1); glVertex3f(-D,+D,-D);
+   glTexCoord2f(0.75,1); glVertex3f(-D,+D,+D);
+   glEnd();
+
+   //  Top and bottom
+   //glBindTexture(GL_TEXTURE_2D,sky[1]);
+	 setUniforms(shader_texture, frameInSec, sky[1]);
+   glBegin(GL_QUADS);
+	 glNormal3f(0,-1,0);
+   glTexCoord2f(0.0,0); glVertex3f(+D,+D,-D);
+   glTexCoord2f(0.5,0); glVertex3f(+D,+D,+D);
+   glTexCoord2f(0.5,1); glVertex3f(-D,+D,+D);
+   glTexCoord2f(0.0,1); glVertex3f(-D,+D,-D);
+
+	 glNormal3f(0,1,0);
+   glTexCoord2f(1.0,1); glVertex3f(-D,-D,+D);
+   glTexCoord2f(0.5,1); glVertex3f(+D,-D,+D);
+   glTexCoord2f(0.5,0); glVertex3f(+D,-D,-D);
+   glTexCoord2f(1.0,0); glVertex3f(-D,-D,-D);
+   glEnd();
+
+   //glDisable(GL_TEXTURE_2D);
+}
+
 void display() {
   //This needs to be called before glClear for reasons unknown!!!!!!!!!!!
   glEnable(GL_DEPTH_TEST);
@@ -285,8 +342,13 @@ void display() {
     glPopMatrix();
   }
 
+  glUseProgram(shader_texture);
+  glEnable(GL_CULL_FACE);
+  Sky(3.0);
+  glDisable(GL_CULL_FACE);
+
   glUseProgram(shader_uw);
-  setUniforms(shader_uw, frameInSec);
+  setUniforms(shader_uw, frameInSec, 0);
 
   glPushMatrix();
   //glTranslated(0,1,0);
@@ -303,13 +365,14 @@ void display() {
   glutSolidTeapot(0.7);
   glPopMatrix();
 
-  //Sky(200.0);
-
-  //Render stairs to frame buffer using simple shader. Once the stairs have lighting, switch this to shader_uw
-  glUseProgram(shader_uw);
+  //Render underwater components of scene to frame buffer.
   glBindFramebuffer(GL_FRAMEBUFFER, fbuf);
   glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,width, height); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+
+  glPushMatrix();
+  //drawWall();
+  glPopMatrix();
 
   glPushMatrix();
   glTranslated(0, -1, 0);
@@ -320,9 +383,12 @@ void display() {
   glViewport(0,0,width, height);
 
   //Render texture in frame buffer to quad the size of the screen, using the shader that causes distortion
+  //If nothing is behind the stairs allow those pixels to be transparent
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
   glUseProgram(shader_distort);
   //glClear(GL_COLOR_BUFFER_BIT);
-  setUniforms(shader_distort, frameInSec);
+  setUniforms(shader_distort, frameInSec, 0);
   glPushMatrix();
   //the size of the screen?
   drawPlane(2,2,10);
@@ -332,12 +398,10 @@ void display() {
   //glBindTexture(GL_TEXTURE_2D, tex_ws);
   //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glUseProgram(shader_ws);
-  setUniforms(shader_ws, frameInSec);
+  setUniforms(shader_ws, frameInSec, 0);
   //glUseProgram(shader_debug);
-  glEnable(GL_BLEND);
   //glEnable(GL_DEPTH_TEST);
   //glBlendEquation( GL_FUNC_ADD );
-  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
   /*glPushMatrix();
   glRotated(90, 1,0,0);
@@ -483,6 +547,7 @@ int main(int argc,char* argv[])
     shader_ws  = CreateShaderProg("water_surf.vert", "water_surf.frag"); //ws = water surface
     shader_distort = CreateShaderProg("distort.vert", "distort.frag"); //for stairs with no tex coords yet
     shader_debug = CreateShaderProg("debug.vert", "debug.frag");
+    shader_texture = CreateShaderProg("texture.vert", "texture.frag");
 
     if(renderToFrameBuf() < 0) Fatal("frame buffer error\n");
    //  Pass control to GLUT so it can interact with the user

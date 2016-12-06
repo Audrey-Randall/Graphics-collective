@@ -103,7 +103,6 @@ void drawSeaUrchin();
 void getLtPos();
 void drawSphere();
 void drawStairs(int n, float h, float w, float l);
-void Sky(double D);
 void setLight();
 void Crout(double M[16],int I[4]);
 void Transform(float x0,float y0,float z0,

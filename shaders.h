@@ -24,6 +24,7 @@ int shader_uw;
 int shader_ws;
 int shader_debug;
 int shader_distort;
+int shader_texture;
 //underwater object textures
 unsigned int tex_uw;
 unsigned int norm_uw;
@@ -52,7 +53,7 @@ void PrintShaderLog(int obj,char* file);
 int CreateShader(GLenum type,char* file);
 int CreateShaderProg(char* VertFile, char* FragFile);
 void drawPlane(float width, float height, int split);
-void setUniforms(int shader, int frameInSec);
+void setUniforms(int shader, int frameInSec, unsigned int texture);
 int renderToFrameBuf();
 
 #endif

@@ -329,7 +329,7 @@ int renderToFrameBuf(){
 }
 
 
-void setUniforms(int shader, int frameInSec) {
+void setUniforms(int shader, int frameInSec, unsigned int texture) {
     if(shader == shader_uw) {
       int texUnitLoc = glGetUniformLocation(shader_uw, "tex");
       if(texUnitLoc < 0) {
@@ -382,6 +382,13 @@ void setUniforms(int shader, int frameInSec) {
         printf("Failure in shader %d: uniform time\n", shader_distort);
       } else {
         glProgramUniform1i(shader_distort, timeLoc, frameInSec);
+      }
+    } else if (shader == shader_texture) {
+      int texUnitLoc = glGetUniformLocation(shader_texture, "tex");
+      if(texUnitLoc < 0) {
+        printf("Failure in shader_texture: uniform tex\n");
+      } else {
+        glProgramUniform1i(shader_texture, texUnitLoc, texture);
       }
     }
 }
