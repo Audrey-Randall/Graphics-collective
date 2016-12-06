@@ -330,6 +330,7 @@ void display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glBindFramebuffer(GL_FRAMEBUFFER, 0); //Should unbind frame buffer
   glViewport(0,0,width, height);
+  glUseProgram(shader_uw);
 
   glShadeModel(GL_SMOOTH);
 
@@ -342,10 +343,43 @@ void display() {
     glPopMatrix();
   }
 
+  //Render underwater components of scene to frame buffer.
+  glBindFramebuffer(GL_FRAMEBUFFER, fbuf);
+  glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
+  glViewport(0,0,width, height); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+
+  glPushMatrix();
+  //drawWall();
+  glPopMatrix();
+
+  glPushMatrix();
+  glTranslated(0, -1, 0);
+  drawStairs(10,0.5,1, 2);   //n, h, w, l
+  glPopMatrix();
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0); //Should unbind frame buffer
+  glViewport(0,0,width, height);
+
   glUseProgram(shader_texture);
+  glDisable(GL_DEPTH_TEST); //Disable depth test to draw sky box and underwater plane: rely on painter's algorithm
   glEnable(GL_CULL_FACE);
   Sky(3.0);
   glDisable(GL_CULL_FACE);
+
+  //Render texture in frame buffer to quad the size of the screen, using the shader that causes distortion
+  //If nothing is behind the stairs allow those pixels to be transparent
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+  glUseProgram(shader_distort);
+  //glClear(GL_COLOR_BUFFER_BIT);
+  setUniforms(shader_distort, frameInSec, 0);
+  glPushMatrix();
+  //the size of the screen?
+  drawPlane(2,2,10);
+  glPopMatrix();
+
+  glDisable(GL_BLEND);
+  glEnable(GL_DEPTH_TEST);
 
   glUseProgram(shader_uw);
   setUniforms(shader_uw, frameInSec, 0);
@@ -365,48 +399,15 @@ void display() {
   glutSolidTeapot(0.7);
   glPopMatrix();
 
-  //Render underwater components of scene to frame buffer.
-  glBindFramebuffer(GL_FRAMEBUFFER, fbuf);
-  glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
-  glViewport(0,0,width, height); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
-  glPushMatrix();
-  //drawWall();
-  glPopMatrix();
-
-  glPushMatrix();
-  glTranslated(0, -1, 0);
-  drawStairs(10,0.5,1, 2);   //n, h, w, l
-  glPopMatrix();
-
-  glBindFramebuffer(GL_FRAMEBUFFER, 0); //Should unbind frame buffer
-  glViewport(0,0,width, height);
-
-  //Render texture in frame buffer to quad the size of the screen, using the shader that causes distortion
-  //If nothing is behind the stairs allow those pixels to be transparent
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-  glUseProgram(shader_distort);
-  //glClear(GL_COLOR_BUFFER_BIT);
-  setUniforms(shader_distort, frameInSec, 0);
-  glPushMatrix();
-  //the size of the screen?
-  drawPlane(2,2,10);
-  glPopMatrix();
 
 //Draw water last since it has to be partially transparent
   //glBindTexture(GL_TEXTURE_2D, tex_ws);
   //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
   glUseProgram(shader_ws);
   setUniforms(shader_ws, frameInSec, 0);
-  //glUseProgram(shader_debug);
-  //glEnable(GL_DEPTH_TEST);
-  //glBlendEquation( GL_FUNC_ADD );
-
-  /*glPushMatrix();
-  glRotated(90, 1,0,0);
-  //drawPlane(1,1,10);
-  glPopMatrix();*/
   drawWater();
 
   glDisable(GL_BLEND);

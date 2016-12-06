@@ -21,6 +21,6 @@ void main()
   float f = (dEnd + pos.y)/(dEnd - dStart);
   texture = f*1.5*texture + (1-f*1.5)*fogColor;*/
 
-  if(texture.x == 0 || texture.y == 0 || texture.z == 0) gl_FragColor = (0.5,0.5,0.5,1);
+  if(texture.x == 0 || texture.y == 0 || texture.z == 0) gl_FragColor = (0.5,0.5,0.5,0);
   else gl_FragColor = texture;
 }

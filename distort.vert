@@ -5,7 +5,7 @@ varying vec2 texCoords;
 void main()
 {
     vec4 pos = gl_Vertex;
-    pos.z = 0.99; //I guess we must be in window space, clipping plane is at 1
+    pos.z = 0.2; //I guess we must be in window space, clipping plane is at 1
     gl_Position = pos;
     texCoords = gl_MultiTexCoord0.xy;
 
