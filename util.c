@@ -34,8 +34,8 @@ void init() {
 	getLtPos();
 	emission = 0.0;
 	ambient = 0.3;
-	diffuse = 1.0;
-	specular = 1.0;
+	diffuse = 0.1;
+	specular = 0.8;
 	rgb = 1.0;
 	ltParam = 0;
 	shinyness = 16;
@@ -369,8 +369,99 @@ void drawStairs(int n, float h, float w, float l) {
 	}
 }
 
-void drawWall(){
+void drawUWStairWall(){
+	float i, j;
+	glPushMatrix();
+	glScaled(0.5,0.5,0.1);
+	for(i = -2.5; i < 1; i++){
+		for(j = -2.5; j < 0; j++){
+			glPushMatrix();
+			glTranslated(i*2, j*2, 0);
+			drawStep();
+			glPopMatrix();
+		}
+	}
+	glPopMatrix();
 
+	glPushMatrix();
+	glTranslated(0.5,0,0);
+	//Upper stairs
+	glPushMatrix();
+	glTranslated(1.5, -1.5,3.55);
+	glRotated(90,0,1,0);
+	glScaled(1,1.5,1);
+	drawStairs(10,0.5,1, 2);
+	glPopMatrix();
+
+	//Lower stairs
+	glPushMatrix();
+	glTranslated(-3.3, -3, 4.33);
+	//glRotated(90,0,1,0);
+	glScaled(1,1.5,1);
+	drawStairs(10,0.5,1, 2);
+	glPopMatrix();
+
+	//Corner cube for stair
+	glPushMatrix();
+	glTranslated(1.5, -2.5, 4.3);
+	//glScaled(1,0.75,1);
+	drawStep();
+	glPopMatrix();
+
+	//Side cube under high stair
+	glPushMatrix();
+	glTranslated(1.5, -2.5, 1.75);
+	glScaled(1,1,1.75);
+	drawStep();
+	glPopMatrix();
+
+	glPopMatrix();
+
+	//Floor
+	glPushMatrix();
+	glTranslated(0, -3, 3);
+	glRotated(90,1,0,0);
+	glPushMatrix();
+	glScaled(0.5,0.5,0.1);
+	for(i = -2.5; i < 2.5; i++){
+		for(j = -2.5; j < 2.5; j++){
+			glPushMatrix();
+			glTranslated(i*2, j*2, 0);
+			drawStep();
+			glPopMatrix();
+		}
+	}
+	glPopMatrix();
+	glPopMatrix();
+
+	//Side walls
+	int k;
+	for(k = -3; k <=3; k+=6){
+		glPushMatrix();
+		glTranslated(k, 0, 2);
+		glRotated(90,0,1,0);
+		glPushMatrix();
+		glScaled(0.5,0.5,0.1);
+		for(i = -2.5; i < 2.5; i++){
+			for(j = -2.5; j < 0; j++){
+				glPushMatrix();
+				glTranslated(i*2, j*2, 0);
+				drawStep();
+				glPopMatrix();
+			}
+		}
+		glPopMatrix();
+	  glPopMatrix();
+	}
+
+}
+
+void drawAWStairWall(){
+
+}
+
+void drawRoom(){
+	drawUWStairWall();
 }
 
 void setLight(){

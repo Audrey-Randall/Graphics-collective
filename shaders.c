@@ -379,7 +379,7 @@ void setUniforms(int shader, int frameInSec, unsigned int texture) {
       }
       int timeLoc = glGetUniformLocation(shader_distort, "time");
       if(timeLoc < 0) {
-        printf("Failure in shader %d: uniform time\n", shader_distort);
+        //printf("Failure in shader %d: uniform time\n", shader_distort);
       } else {
         glProgramUniform1i(shader_distort, timeLoc, frameInSec);
       }

@@ -53,7 +53,6 @@ void main()
     }
     //The range of light intensities is super high, need to up the ambient and decrease what?
     vec4 texture = texture2D(tex, texCoords).xyzw;
-    texture.w = 0.1;
     vec4 allColor = color * texture;
     //if(pos.y < 0) {
       //float distBelow = -1.0*depth;

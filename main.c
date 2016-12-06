@@ -333,6 +333,7 @@ void display() {
   glUseProgram(shader_uw);
 
   glShadeModel(GL_SMOOTH);
+  glEnable(GL_DEPTH_BUFFER);
 
   //draw light placeholder
   if(drawLight) {
@@ -349,13 +350,14 @@ void display() {
   glViewport(0,0,width, height); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
   glPushMatrix();
-  //drawWall();
+  glScaled(2,2,2);
+  drawRoom();
   glPopMatrix();
 
-  glPushMatrix();
+  /*glPushMatrix();
   glTranslated(0, -1, 0);
   drawStairs(10,0.5,1, 2);   //n, h, w, l
-  glPopMatrix();
+  glPopMatrix();*/
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0); //Should unbind frame buffer
   glViewport(0,0,width, height);
@@ -363,7 +365,7 @@ void display() {
   glUseProgram(shader_texture);
   glDisable(GL_DEPTH_TEST); //Disable depth test to draw sky box and underwater plane: rely on painter's algorithm
   glEnable(GL_CULL_FACE);
-  Sky(3.0);
+  Sky(10.0);
   glDisable(GL_CULL_FACE);
 
   //Render texture in frame buffer to quad the size of the screen, using the shader that causes distortion
@@ -384,7 +386,7 @@ void display() {
   glUseProgram(shader_uw);
   setUniforms(shader_uw, frameInSec, 0);
 
-  glPushMatrix();
+  /*glPushMatrix();
   //glTranslated(0,1,0);
   glutSolidTeapot(0.7);
   glPopMatrix();
@@ -397,7 +399,7 @@ void display() {
   glPushMatrix();
   glTranslated(0,-2,0);
   glutSolidTeapot(0.7);
-  glPopMatrix();
+  glPopMatrix();*/
 
 
 
