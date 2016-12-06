@@ -350,14 +350,11 @@ void display() {
   glViewport(0,0,width, height); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
   glPushMatrix();
+  glTranslated(3,0,0);
+  glRotated(180, 0,1,0);
   glScaled(2,2,2);
   drawRoom();
   glPopMatrix();
-
-  /*glPushMatrix();
-  glTranslated(0, -1, 0);
-  drawStairs(10,0.5,1, 2);   //n, h, w, l
-  glPopMatrix();*/
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0); //Should unbind frame buffer
   glViewport(0,0,width, height);

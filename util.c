@@ -34,7 +34,7 @@ void init() {
 	getLtPos();
 	emission = 0.0;
 	ambient = 0.3;
-	diffuse = 0.1;
+	diffuse = 0.03;
 	specular = 0.8;
 	rgb = 1.0;
 	ltParam = 0;
@@ -453,6 +453,22 @@ void drawUWStairWall(){
 		glPopMatrix();
 	  glPopMatrix();
 	}
+
+	//Back wall
+	glPushMatrix();
+	glTranslated(0, 0, 5);
+	glPushMatrix();
+	glScaled(0.5,0.5,0.1);
+	for(i = -2.5; i < 3.5; i++){
+		for(j = -2.5; j < 0; j++){
+			glPushMatrix();
+			glTranslated(i*2, j*2, 0);
+			drawStep();
+			glPopMatrix();
+		}
+	}
+	glPopMatrix();
+	glPopMatrix();
 
 }
 

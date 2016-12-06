@@ -283,8 +283,8 @@ void drawWater(){
   glColor4f(0.5,0,0, 0.2);
   int i;
   int j;
-  for(i = -5; i < 5; i++) {
-    for(j = -5; j < 5; j++) {
+  for(i = -10; i < 10; i++) {
+    for(j = -10; j < 10; j++) {
       glPushMatrix();
       glRotated(90, 1,0,0);
       glTranslated(i*2, j*2, 0);
