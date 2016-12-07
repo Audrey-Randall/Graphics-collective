@@ -473,7 +473,56 @@ void drawUWStairWall(){
 }
 
 void drawAWStairWall(){
-
+	float j, i;
+	//Front wall
+	glPushMatrix();
+	glTranslated(0,3,0);
+	glScaled(0.5,0.5,0.1);
+	for(i = -2.5; i < 1; i++){
+		for(j = -2.5; j < 0; j++){
+			glPushMatrix();
+			glTranslated(i*2, j*2, 0);
+			drawStep();
+			glPopMatrix();
+		}
+	}
+	glPopMatrix();
+	//Side walls
+	int k;
+	for(k = -3; k <=3; k+=6){
+		glPushMatrix();
+		glTranslated(0,3,0);
+		glTranslated(k, 0, 2);
+		glRotated(90,0,1,0);
+		glPushMatrix();
+		glScaled(0.5,0.5,0.1);
+		for(i = -2.5; i < 2.5; i++){
+			for(j = -2.5; j < 0; j++){
+				glPushMatrix();
+				glTranslated(i*2, j*2, 0);
+				drawStep();
+				glPopMatrix();
+			}
+		}
+		glPopMatrix();
+	  glPopMatrix();
+	}
+	//Back wall
+	glPushMatrix();
+	glTranslated(0,3,0);
+	glTranslated(0, 0, 5);
+	glPushMatrix();
+	glScaled(0.5,0.5,0.1);
+	for(i = -2.5; i < 3.5; i++){
+		for(j = -2.5; j < 0; j++){
+			glPushMatrix();
+			glTranslated(i*2, j*2, 0);
+			drawStep();
+			glPopMatrix();
+		}
+	}
+	glPopMatrix();
+	glPopMatrix();
 }
 
 void drawRoom(){

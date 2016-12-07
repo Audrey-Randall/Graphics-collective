@@ -383,6 +383,13 @@ void display() {
   glUseProgram(shader_uw);
   setUniforms(shader_uw, frameInSec, 0);
 
+  glPushMatrix();
+  glTranslated(3,0,0);
+  glRotated(180,0,1,0);
+  glScaled(2,2,2);
+  drawAWStairWall();
+  glPopMatrix();
+
   /*glPushMatrix();
   //glTranslated(0,1,0);
   glutSolidTeapot(0.7);
