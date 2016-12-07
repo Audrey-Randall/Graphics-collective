@@ -362,7 +362,7 @@ void display() {
   glUseProgram(shader_texture);
   glDisable(GL_DEPTH_TEST); //Disable depth test to draw sky box and underwater plane: rely on painter's algorithm
   glEnable(GL_CULL_FACE);
-  Sky(10.0);
+  Sky(15.0);
   glDisable(GL_CULL_FACE);
 
   //Render texture in frame buffer to quad the size of the screen, using the shader that causes distortion
@@ -546,10 +546,10 @@ int main(int argc,char* argv[])
     norm_uw = LoadTexBMP("textures/normal_4.bmp");
     glActiveTexture(GL_TEXTURE5);
     glBindTexture(GL_TEXTURE_2D, sky[0]);
-    sky[0] = LoadTexBMP("textures/sky0.bmp");
+    sky[0] = LoadTexBMP("textures/nightsky0.bmp");
     glActiveTexture(GL_TEXTURE6);
     glBindTexture(GL_TEXTURE_2D, sky[1]);
-    sky[1] = LoadTexBMP("textures/sky1.bmp");
+    sky[1] = LoadTexBMP("textures/nightsky1.bmp");
     printf("Texture numbers: %d, %d, %d, %d, %d, %d\n", tex_ws, norm_ws, tex_uw, norm_uw, sky[0], sky[1]);
 
     //Shaders
