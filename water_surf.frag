@@ -9,7 +9,7 @@ uniform sampler2D tex;
 uniform sampler2D normal_tex;
 uniform int frame;
 varying vec2 texCoords;
-varying vec3 pos;
+varying vec3 pos, lightVec;
 
 void main()
 {
@@ -20,8 +20,11 @@ void main()
     vec4 fogColor = vec4(0,0,0,1);
 
     //lightDir = vec3(gl_LightSource[0].position);
-    lightDir = vec3(gl_LightSource[0].position.xyz - viewVector);
-    viewDir = normalize(-viewVector);
+    lightDir = (vec3(gl_LightSource[0].position.xyz - viewVector))/6;
+    viewDir = (viewVector);
+
+    float lLen = sqrt(lightDir.x*lightDir.x + lightDir.y*lightDir.y+lightDir.z*lightDir.z);
+    float vLen = sqrt(viewDir.x*viewDir.x + viewDir.y*viewDir.y+viewDir.z*viewDir.z);
 
     float t = -1.0*pos.y/viewVector.y;
     vec3 intersect = vec3(pos.x+t*viewVector.x, pos.y + t*viewVector.y, pos.z + t*viewVector.z);
@@ -30,7 +33,6 @@ void main()
 
     /* The ambient term will always be present */
     vec4 color = ambient;
-    color.a = 0.1;
 
     /* a fragment shader can't write a varying variable, hence we need
     a new variable to store the normalized interpolated normal */
@@ -58,7 +60,9 @@ void main()
     }
     //The range of light intensities is super high, need to up the ambient and decrease what?
     vec4 texture = texture2D(tex, texCoords).xyzw;
-    texture.w = 0.1;
+    texture.w = 1;
     vec4 allColor = color * texture;
-    gl_FragColor = allColor;
+    vec4 nTex = texture2D(normal_tex, texCoords);
+    allColor.w = 0.3;
+    gl_FragColor = allColor;//vec4(normal.x, normal.y, normal.z, 1);//allColor; //vec4(viewDir.x/255, viewDir.y/255, viewDir.z/255,1);
 }

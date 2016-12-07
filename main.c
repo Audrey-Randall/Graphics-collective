@@ -407,11 +407,14 @@ void display() {
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
   glUseProgram(shader_ws);
   setUniforms(shader_ws, frameInSec, 0);
+  glPushMatrix();
+  glScaled(2,2,2);
   drawWater();
+  glPopMatrix();
 
   glDisable(GL_BLEND);
   //TODO: need to destroy frame buffer
-  glUseProgram(0);
+  glUseProgram(shader_uw);
   glDisable(GL_LIGHTING);
   glFlush();
   glutSwapBuffers(); //this is for double buffered window. Single buffered uses glFlush.

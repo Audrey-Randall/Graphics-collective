@@ -28,9 +28,9 @@ void init() {
 	Ey = 0;
 	Ez = 2;
 	sensitivity = 0.3;
-	ltAng = 0;
-	ltY = 0;
-	ltMove = 1;
+	ltAng = 180;
+	ltY = 2;
+	ltMove = 0;
 	getLtPos();
 	emission = 0.0;
 	ambient = 0.3;
@@ -46,10 +46,10 @@ void init() {
 
 void getLtPos(){
 	//2*Cos(ltAng), ltY, 2*Sin(ltAng), 1.0
-	ltPos[0] = 2*Cos(ltAng);
-	ltPos[1] = ltY;
-	ltPos[2] = 2*Sin(ltAng);
-	ltPos[3] = 1.0;
+		ltPos[0] = 20*Cos(ltAng);
+		ltPos[1] = ltY;
+		ltPos[2] = 20*Sin(ltAng);
+		ltPos[3] = 1.0;
 }
 
 void Print(const char* format , ...)
@@ -487,7 +487,7 @@ void setLight(){
   float Ambient[]   = {ambient, ambient, ambient,1.0};
   float Diffuse[]   = {diffuse, diffuse, diffuse,1.0};
   float Specular[]  = {specular, specular, specular,1.0};
-	float Position[] = {2*Cos(ltAng), ltY, 2*Sin(ltAng), 1.0};
+	float Position[] = {0, ltY,-40, 1};//{10*Cos(ltAng), ltY, 10*Sin(ltAng), 0.0};
   float Shinyness[] = {shinyness};
 	float RGBA[4] = {1,1,1,1};
 
@@ -499,6 +499,10 @@ void setLight(){
   glLightfv(GL_LIGHT0,GL_DIFFUSE ,Diffuse);
   glLightfv(GL_LIGHT0,GL_SPECULAR,Specular);
   glLightfv(GL_LIGHT0,GL_POSITION, Position);
+
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.0);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.0);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0);
   //  Set materials
   glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,Shinyness);
   glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,RGBA);
