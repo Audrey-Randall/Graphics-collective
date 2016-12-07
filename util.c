@@ -261,7 +261,7 @@ void drawSphere(){
 
 //Same as drawCube but with texture coordinates
 //i is which step, h = height of step,
-drawStep(){
+void drawStep(){
     glBegin(GL_TRIANGLES);
     glColor3f(0.38,0.355,0.30); //yellow
     glNormal3f(-1,0,0);
@@ -601,7 +601,7 @@ void Crout(double M[16],int I[4])
       for (i=j;i<4;i++)
          for (k=0;k<j;k++)
             M(j,i) -= M(k,i)*M(j,k);
-      if (fabs(M(j,j))<1e-10) Fatal("Singular transformation matrix\n");
+      //if (fabs(M(j,j))<1e-10) Fatal("Singular transformation matrix\n");
       //  Lower triangular matrix
       for (i=j+1;i<4;i++)
       {
@@ -642,7 +642,7 @@ Point Backsolve(double M[16],int I[4],double Bx,double By,double Bz,double Bw)
    }
 
    //  Renormalize
-   if (fabs(x[3])<1e-10) Fatal("Light position W is zero\n");
+   //if (fabs(x[3])<1e-10) Fatal("Light position W is zero\n");
    X.x = x[0]/x[3];
    X.y = x[1]/x[3];
    X.z = x[2]/x[3];

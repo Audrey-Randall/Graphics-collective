@@ -456,7 +456,7 @@ void idle()
        Ey += 0.2*lookVec[1];
        Ez += 0.2*lookVec[2];
        cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-       printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
+       //printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
      }
      if(down) {
        //sphericalToCartesian(rh, ph, th, &Ex, &Ey, &Ez);
@@ -467,7 +467,7 @@ void idle()
        Ey -= 0.2*lookVec[1];
        Ez -= 0.2*lookVec[2];
        cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-       printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
+       //printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
      }
      if(left) {
        printf("Before sphToCart: Ex, Ey, Ez: (%f,%f,%f)\n", Ex, Ey, Ez);
@@ -479,7 +479,7 @@ void idle()
        Ey -= 0.2*rightVec[1];
        Ez -= 0.2*rightVec[2];
        cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-       printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
+       //printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
      }
      if(right) {
        //sphericalToCartesian(rh, ph, th, &Ex, &Ey, &Ez);
@@ -490,7 +490,7 @@ void idle()
        Ey += 0.2*rightVec[1];
        Ez += 0.2*rightVec[2];
        cartesianToSpherical(Ex, Ey, Ez, &rh, &ph, &th);
-       printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
+       //printf("After step:\n\t Position vector => (%f,%f,%f)\n\tFocal pt = (%f,%f,%f)\n\t Rho = %f, phi = %f\n", Ex, Ey, Ez, Ex+lookVec[0], Ey+lookVec[1], Ez+lookVec[2], rh, ph);
      }
 
      //  Tell GLUT it is necessary to redisplay the scene
@@ -513,7 +513,7 @@ int main(int argc,char* argv[])
    height = 500;
    glutInitWindowSize(width, height);
    //  Create the window
-   glutCreateWindow("Water Shaders (Audrey Randall)");
+   glutCreateWindow("Flooded Ruins (Audrey Randall)");
 
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
