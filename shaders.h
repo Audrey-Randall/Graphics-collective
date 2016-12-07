@@ -1,6 +1,6 @@
 #ifndef SHADERS_H
 #define SHADERS_H
-#define USEGLEW
+//#define USEGLEW
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +10,7 @@
 #include <string.h>
 
 #ifdef USEGLEW
+#define GLEW_STATIC
 #include <GL/glew.h>
 #endif
 //  OpenGL with prototypes for glext
@@ -53,6 +54,7 @@ void PrintShaderLog(int obj,char* file);
 int CreateShader(GLenum type,char* file);
 int CreateShaderProg(char* VertFile, char* FragFile);
 void drawPlane(float width, float height, int split);
+void drawWater();
 void setUniforms(int shader, int frameInSec, unsigned int texture);
 int renderToFrameBuf();
 

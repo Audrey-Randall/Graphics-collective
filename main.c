@@ -333,7 +333,7 @@ void display() {
   glUseProgram(shader_uw);
 
   glShadeModel(GL_SMOOTH);
-  glEnable(GL_DEPTH_BUFFER);
+  glEnable(GL_DEPTH_TEST);
 
   //draw light placeholder
   if(drawLight) {
@@ -501,6 +501,7 @@ void idle()
 int main(int argc,char* argv[])
 {
   //  Initialize GLUT and process user parameters
+   
    init();
    glutInit(&argc,argv);
    //  Request double buffered, true color window with z-buffering
@@ -523,14 +524,16 @@ int main(int argc,char* argv[])
    //glutMotionFunc(mouse_motion);
    //glutMouseFunc(on_click);
    //obj = LoadOBJ("elf_obj.obj");
-
-   glewInit();
-   	if (GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader)
+   
+   #ifdef USEGLEW
+        glewInit();
+   	/*if (GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader)
    		printf("Ready for GLSL\n");
    	else {
    		printf("No GLSL support\n");
    		exit(1);
-   	}
+   	}*/
+    #endif
     //Textures
     glBindTexture(GL_TEXTURE_2D, tex_ws);
     glActiveTexture(GL_TEXTURE1);

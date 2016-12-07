@@ -1,7 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#define USEGLEW
+//#define USEGLEW
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,6 +11,7 @@
 #include <string.h>
 
 #ifdef USEGLEW
+#define GLEW_STATIC
 #include <GL/glew.h>
 #endif
 //  OpenGL with prototypes for glext
